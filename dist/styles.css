@@ -1,0 +1,146 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --cell-width: 30px;
+}
+
+.header {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-top {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.main-middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.ships-container {
+  width: 300px;
+}
+
+.ship-container {
+  height: calc(1.5px + var(--cell-width));
+  border: 1px dashed blue;
+}
+
+.carrier-container {
+  width: calc(4*var(--cell-width));
+}
+
+.battleship-container {
+  width: calc(3*var(--cell-width));
+}
+
+.submarine-container {
+  width: calc(2*var(--cell-width));
+}
+
+.destroyer-container {
+  width: calc(var(--cell-width));
+}
+
+.ship-row {
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.board-container {
+  display: grid;
+  grid-template-columns: repeat(11, var(--cell-width));
+  grid-template-rows: repeat(11, var(--cell-width));
+}
+
+.coord-num {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-grid {
+  grid-column: 2 / 12;
+  grid-row: 2 / 12;
+  display: grid;
+  grid-template-columns: repeat(10, var(--cell-width));
+  grid-template-rows: repeat(10, var(--cell-width));
+  border: 1px solid grey;
+}
+
+.cell {
+  border: 0.5px solid rgb(201, 201, 201);
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+.ship-cell {
+  position: relative;
+}
+
+.draggable {
+  display: grid;
+  border: thin solid blue;
+  background-color: lightblue;
+  opacity: 0.6;
+  cursor: move;
+}
+
+.draggable-x {
+  height: var(--cell-width);
+  top: -0.5px;
+  left: -1.5px;
+}
+
+.draggable-y {
+  width: var(--cell-width);
+  top: -1.5px;
+  left: -0.5px;
+}
+
+.dragged {
+  position: absolute;
+  z-index: 1;
+}
+
+.dragging {
+    background-color: rgb(253, 253, 253);
+    border: thin solid rgb(132, 132, 210);
+}
+
+.red {
+    background-color: greenyellow;
+}
+
+.main-bottom {
+  margin-top: 30px;
+}
+
+/* No display */
+.hide {
+  display: none;
+}

@@ -28,6 +28,29 @@ export default class Gameboard {
     });
   }
 
+  getAdjacentsForAxisX(coords) {
+    const adjacents = [];
+
+    const head = [coords[0][0], coords[0][1] - 1];
+    const headNeighbor = [head[0] - 1, head[1]];
+    adjacents.push(head, headNeighbor);
+
+    const tail = [];
+    for (let i = 1; i !== coords.length + 1; i += 1) {
+      adjacents.push([headNeighbor[0], headNeighbor[1] + i]);
+    }
+
+    const fourthCell = [coords[0][0], coords[0][1] - 1];
+    const fifthCell = [head[0] - 1, head[1]];
+
+    adjacents.push();
+    adjacents.push([coords[0][0], coords[0][1] - 1]);
+  }
+
+  getAdjacentForAxisY(coords) {
+    const start = [coords[0][0] + 1, coords[0][1]];
+  }
+
   checkValidLocation(coords, shipLen) {
     if (coords.length !== shipLen) return false;
 
@@ -39,15 +62,20 @@ export default class Gameboard {
       const w = [coord[0], coord[1] - 1];
 
       surroundingCoords.push(n, s, e, w);
-      const isValid = surroundingCoords.some(
-        (c) =>
+      const isValid = surroundingCoords.some((c) => {
+        console.log(!this.gameboard[c[0]][c[1]].ship);
+        if (
           !coords.includes(c) &&
           this.gameboard[c[0]] &&
           this.gameboard[c[0]][c[1]] &&
           !this.gameboard[c[0]][c[1]].ship
-      );
+        ) {
+          return true;
+        }
+        return false;
+      });
 
-      return isValid;
+      return !isValid;
     });
 
     return isValidLocation;

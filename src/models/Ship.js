@@ -1,9 +1,12 @@
 export default class Ship {
-  constructor(shipLength) {
-    this.shipLength = shipLength;
-  }
-
   numHits = 0;
+  coords = [];
+
+  constructor(name, shipLength, axis) {
+    this.name = name;
+    this.shipLength = shipLength;
+    this.axis = axis;
+  }
 
   hit() {
     this.numHits += 1;
