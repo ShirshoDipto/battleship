@@ -5,9 +5,13 @@ import {
   ship1,
 } from "./DOMinteraction/gameboard";
 
-const gameboard = document.querySelector(".main-grid");
+import Gameboard from "./models/Gameboard";
 
-renderGameboard(gameboard);
+const gameboardGrid = document.querySelector(".main-grid");
+const newGameboard = new Gameboard();
+newGameboard.initiateGameboard();
+
+renderGameboard(gameboardGrid, newGameboard.grid);
 
 let shipsContainer = document.querySelector(".ships-container");
 let draggables = document.querySelectorAll(".draggable");
@@ -30,29 +34,28 @@ const getMeasurements = (e) => {
   });
 };
 
+const getElemAtPosition = (e, coord) => {
+  const clientXDistance = e.clientX - coord[0];
+  const clientYDistance = e.clientY - coord[1];
+  return document.elementFromPoint(clientXDistance, clientYDistance);
+};
+
 const displayDraggablePositions = (e) => {
   let hoveredCells = [];
-  const [newX, newY] = [e.clientX, e.clientY];
-  if (initialX === newX && initialY === newY) {
-    return;
-  }
+  // const [newX, newY] = [e.clientX, e.clientY];
+  // if (initialX === newX && initialY === newY) return;
 
-  [initialX, initialY] = [newX, newY];
-  e.target.classList.add("hide");
+  // [initialX, initialY] = [newX, newY];
+  // e.target.classList.add("hide");
   distanceFromMidToMouse.forEach((d) => {
-    const clientXDistance = e.clientX - d[0];
-    const clientYDistance = e.clientY - d[1];
-    const elementAtPosition = document.elementFromPoint(
-      clientXDistance,
-      clientYDistance
-    );
+    const elemAtPosition = getElemAtPosition(e, d);
 
-    if (elementAtPosition && elementAtPosition.classList.contains("cell")) {
-      hoveredCells.push(elementAtPosition);
+    if (elemAtPosition && elemAtPosition.classList.contains("cell")) {
+      hoveredCells.push(elemAtPosition);
     }
   });
 
-  const shipLenth = Array.from(e.target.querySelectorAll("*")).length;
+  const shipLenth = e.target.querySelectorAll("*").length;
 
   if (hoveredCells.length === shipLenth) {
     cells.forEach((cell) => {
@@ -70,15 +73,16 @@ const displayDraggablePositions = (e) => {
 };
 
 const placeShipOnBoard = (e) => {
-  const clientXDistance = e.clientX - distanceFromMidToMouse[0][0];
-  const clientYDistance = e.clientY - distanceFromMidToMouse[0][1];
-  const elementAtPosition = document.elementFromPoint(
-    clientXDistance,
-    clientYDistance
-  );
+  // const clientXDistance = e.clientX - distanceFromMidToMouse[0][0];
+  // const clientYDistance = e.clientY - distanceFromMidToMouse[0][1];
+  // const elemAtPosition = document.elementFromPoint(
+  //   clientXDistance,
+  //   clientYDistance
+  // );
+  const elemAtPosition = getElemAtPosition(e, distanceFromMidToMouse[0]);
 
-  if (elementAtPosition.classList.contains("cell")) {
-    elementAtPosition.appendChild(e.target);
+  if (elemAtPosition.classList.contains("cell")) {
+    elemAtPosition.appendChild(e.target);
     e.target.classList.add("dragged");
   }
 
@@ -87,21 +91,18 @@ const placeShipOnBoard = (e) => {
     cell.classList.remove("red");
   });
 
-  e.target.classList.remove("dragging");
-  e.target.classList.remove("hide");
+  e.target.classList.remove("dragging", "hide");
 };
 
 const setEventListeners = () => {
   draggables.forEach((d) => {
     d.addEventListener("dragstart", getMeasurements);
-  });
-
-  draggables.forEach((d) => {
     d.addEventListener("drag", displayDraggablePositions);
+    d.addEventListener("dragend", placeShipOnBoard);
   });
 
-  draggables.forEach((d) => {
-    d.addEventListener("dragend", placeShipOnBoard);
+  cells.forEach((cell) => {
+    cell.addEventListener("dragover", (e) => e.preventDefault());
   });
 };
 
@@ -110,7 +111,7 @@ setEventListeners();
 const buttons = document.querySelectorAll(".bottom-section-button");
 buttons.forEach((button) => {
   button.addEventListener("click", (e) => {
-    resetGameboard(gameboard);
+    resetGameboard(gameboardGrid, newGameboard);
     resetShipsContainer(shipsContainer);
     shipsContainer = document.querySelector(".ships-container");
     draggables = document.querySelectorAll(".draggable");

@@ -1,18 +1,11 @@
 import Gameboard from "../models/Gameboard";
 import Ship from "../models/Ship";
-import testGameboardArray from "./testGameboardArray";
 
 let testGameboard;
 
 beforeEach(() => {
   testGameboard = new Gameboard();
   testGameboard.initiateGameboard();
-});
-
-describe("Testing initiateGameboard function", () => {
-  test("Initiates a gameboard", () => {
-    expect(testGameboard.gameboard).toStrictEqual(testGameboardArray);
-  });
 });
 
 describe("Testing placeShip function", () => {
@@ -23,23 +16,36 @@ describe("Testing placeShip function", () => {
       [0, 2],
       [0, 3],
     ];
-    testGameboard.placeShip(coords);
-    const newShip = new Ship(4);
-    expect(testGameboard.gameboard[0][0].ship).toStrictEqual(newShip);
-    expect(testGameboard.gameboard[0][1].ship).toStrictEqual(newShip);
-    expect(testGameboard.gameboard[0][2].ship).toStrictEqual(newShip);
-    expect(testGameboard.gameboard[0][3].ship).toStrictEqual(newShip);
-  });
+    const newShip = new Ship("carrier", 4, "x");
+    testGameboard.placeShip(newShip, coords);
 
-  test("places a ship at [(5, 5)]", () => {
-    const coords = [[5, 5]];
-    testGameboard.placeShip(coords);
-    const newShip = new Ship(1);
-    expect(testGameboard.gameboard[5][5].ship).toStrictEqual(newShip);
+    expect(testGameboard.grid[0][0].ship.shipObj).toStrictEqual(newShip);
+    expect(testGameboard.grid[0][1].ship.shipObj).toStrictEqual(newShip);
+    expect(testGameboard.grid[0][2].ship.shipObj).toStrictEqual(newShip);
+    expect(testGameboard.grid[0][3].ship.shipObj).toStrictEqual(newShip);
+    expect(testGameboard.grid[0][0].ship.isStartCoord).toBeTruthy();
+    expect(newShip.coords).toStrictEqual(coords);
+    expect(newShip).toStrictEqual(testGameboard.allShips[newShip.name]);
+  });
+  test("places a ship from (4, 4) to (7, 4)", () => {
+    const coords = [
+      [4, 4],
+      [5, 4],
+      [6, 4],
+    ];
+    const newShip = new Ship("battleship", 3, "y");
+    testGameboard.placeShip(newShip, coords);
+
+    expect(testGameboard.grid[4][4].ship.shipObj).toStrictEqual(newShip);
+    expect(testGameboard.grid[5][4].ship.shipObj).toStrictEqual(newShip);
+    expect(testGameboard.grid[6][4].ship.shipObj).toStrictEqual(newShip);
+    expect(testGameboard.grid[4][4].ship.isStartCoord).toBeTruthy();
+    expect(newShip.coords).toStrictEqual(coords);
+    expect(newShip).toStrictEqual(testGameboard.allShips[newShip.name]);
   });
 });
 
-describe("Testing checkValidLocation when the board is empty", () => {
+describe("Testing isValidLocation when the board is empty", () => {
   test("Returns TRUE for ship (len 4, vertical) at the bottom-right corner", () => {
     const coords = [
       [6, 9],
@@ -47,7 +53,8 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [8, 9],
       [9, 9],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
+    const ship = new Ship("carrier", 4, "y");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
   });
   test("Returns TRUE for ship (len 4, vertical) at the top-right corner", () => {
     const coords = [
@@ -56,7 +63,8 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [2, 9],
       [3, 9],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
+    const ship = new Ship("carrier", 4, "y");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
   });
   test("Returns TRUE for ship (len 4, vertical) at the top-left corner", () => {
     const coords = [
@@ -65,7 +73,6 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [2, 0],
       [3, 0],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
   });
   test("Returns TRUE for ship (len 4, vertical) at the bottom-left corner", () => {
     const coords = [
@@ -74,8 +81,10 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [8, 0],
       [9, 0],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
+    const ship = new Ship("carrier", 4, "y");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
   });
+
   test("Returns TRUE for ship (len 4, horizontal) at the top-left corner", () => {
     const coords = [
       [0, 0],
@@ -83,7 +92,8 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [0, 2],
       [0, 3],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
+    const ship = new Ship("carrier", 4, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
   });
   test("Returns TRUE for ship (len 4, horizontal) at the bottom-left corner", () => {
     const coords = [
@@ -92,7 +102,6 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [9, 2],
       [9, 3],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
   });
   test("Returns TRUE for ship (len 4, horizontal) at the bottom-right corner", () => {
     const coords = [
@@ -101,7 +110,8 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [9, 8],
       [9, 9],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
+    const ship = new Ship("carrier", 4, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
   });
   test("Returns TRUE for ship (len 4, vertical) at the top-right corner", () => {
     const coords = [
@@ -110,7 +120,8 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [0, 8],
       [0, 9],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
+    const ship = new Ship("carrier", 4, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
   });
   test("Returns TRUE for ship (len 4, vertical) at the bottom-left corner", () => {
     const coords = [
@@ -119,16 +130,8 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [8, 0],
       [9, 0],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
-  });
-  test("Returns TRUE for ship (len 4, vertical) at the bottom-left corner", () => {
-    const coords = [
-      [6, 0],
-      [7, 0],
-      [8, 0],
-      [9, 0],
-    ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeTruthy();
+    const ship = new Ship("carrier", 4, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
   });
 
   test("Returns FALSE for Ship (len 4, vertical) outside the board (bottom-edge)", () => {
@@ -136,29 +139,43 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [7, 9],
       [8, 9],
       [9, 9],
+      [10, 9],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeFalsy();
+    const ship = new Ship("carrier", 4, "y");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeFalsy();
   });
 
   test("Returns FALSE for Ship (len 4, vertical) outside the board (top-edge)", () => {
     const coords = [
+      [-2, 2],
+      [-1, 2],
       [0, 2],
       [1, 2],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeFalsy();
+    const ship = new Ship("carrier", 4, "y");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeFalsy();
   });
 
   test("Returns FALSE for Ship (len 4, horizontal) outside the board (left-edge)", () => {
     const coords = [
+      [0, -2],
+      [0, -1],
       [0, 0],
       [0, 1],
     ];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeFalsy();
+    const ship = new Ship("carrier", 4, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeFalsy();
   });
 
   test("Returns FALSE for Ship (len 4, horizontal) outside the board (right-edge)", () => {
-    const coords = [[0, 9]];
-    expect(testGameboard.checkValidLocation(coords, 4)).toBeFalsy();
+    const coords = [
+      [0, 9],
+      [0, 10],
+      [0, 11],
+      [0, 12],
+    ];
+    const ship = new Ship("carrier", 4, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeFalsy();
   });
 
   test("Returns TRUE for a ship that is placed anywhere in the middle", () => {
@@ -174,57 +191,101 @@ describe("Testing checkValidLocation when the board is empty", () => {
       [2, 3],
       [2, 4],
     ];
-    expect(testGameboard.checkValidLocation(coords1, 4)).toBeTruthy();
-    expect(testGameboard.checkValidLocation(coords2, 4)).toBeTruthy();
+
+    const ship1 = new Ship("carrier", 4, "y");
+    const ship2 = new Ship("carrier", 4, "x");
+    expect(testGameboard.isValidLocation(ship1, coords1)).toBeTruthy();
+    expect(testGameboard.isValidLocation(ship2, coords2)).toBeTruthy();
   });
 });
 
-describe("Testing checkValidLocation when the board is NOT empty", () => {
-  const ship1 = [[1, 1]];
-  const ship2 = [
+describe("Testing isValidLocation when the board is NOT empty", () => {
+  const coords1 = [[1, 1]];
+  const ship1 = new Ship("destroyer1", 1, "x");
+
+  const coords2 = [
     [5, 2],
     [5, 3],
   ];
-  const ship3 = [[9, 0]];
-  const ship4 = [
+  const ship2 = new Ship("submarine1", 1, "y");
+
+  const coords3 = [[9, 0]];
+  const ship3 = new Ship("destroyer2", 1, "x");
+
+  const coords4 = [
     [5, 5],
     [6, 5],
     [7, 5],
   ];
-  const ship5 = [
+  const ship4 = new Ship("battleship1", 3, "y");
+
+  const coords5 = [
     [1, 7],
     [2, 7],
     [3, 7],
     [4, 7],
   ];
-  const ship6 = [
+  const ship5 = new Ship("carrier", 4, "y");
+
+  const coords6 = [
     [6, 7],
     [6, 8],
     [6, 9],
   ];
-  const ship7 = [
+  const ship6 = new Ship("battleship", 3, "x");
+
+  const coords7 = [
     [0, 9],
     [1, 9],
   ];
+  const ship7 = new Ship("submarine", 2, "y");
 
   beforeEach(() => {
-    testGameboard.placeShip(ship1);
-    testGameboard.placeShip(ship2);
-    testGameboard.placeShip(ship3);
-    testGameboard.placeShip(ship4);
-    testGameboard.placeShip(ship5);
-    testGameboard.placeShip(ship6);
-    testGameboard.placeShip(ship7);
+    testGameboard.placeShip(ship1, coords1);
+    testGameboard.placeShip(ship2, coords2);
+    testGameboard.placeShip(ship3, coords3);
+    testGameboard.placeShip(ship4, coords4);
+    testGameboard.placeShip(ship5, coords5);
+    testGameboard.placeShip(ship6, coords6);
+    testGameboard.placeShip(ship7, coords7);
   });
-  test.only("Returns FALSE adjacent to the edges of the ship", () => {
+  test("Returns FALSE adjacent to the edges of the ship", () => {
     const coords = [[5, 7]];
-    expect(testGameboard.checkValidLocation(coords, 1)).toBeFalsy();
+    const ship = new Ship("destroyer", 1, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeFalsy();
   });
   test("Returns FALSE adjacent to the corner of the ship ", () => {
     const coords = [
       [8, 1],
       [8, 2],
     ];
-    expect(testGameboard.checkValidLocation(coords, 2)).toBeFalsy();
+    const ship = new Ship("submarine", 2, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeFalsy();
+  });
+  test("Returns TRUE adjacent to the corner of the ship ", () => {
+    const coords = [
+      [8, 2],
+      [9, 2],
+    ];
+    const ship = new Ship("submarine", 2, "y");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
+  });
+  test("Returns TRUE surrounded by ships", () => {
+    const coords = [
+      [1, 3],
+      [1, 4],
+      [1, 5],
+    ];
+    const ship = new Ship("battleship", 3, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeTruthy();
+  });
+  test("Returns FALSE surrounded by ships", () => {
+    const coords = [
+      [1, 2],
+      [1, 3],
+      [1, 4],
+    ];
+    const ship = new Ship("battleship", 3, "x");
+    expect(testGameboard.isValidLocation(ship, coords)).toBeFalsy();
   });
 });

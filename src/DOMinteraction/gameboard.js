@@ -1,108 +1,5 @@
 import Ship from "../models/Ship";
 
-let gameboard = [
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-  { isMarked: false, ship: false },
-];
-
 // const ship1 = new Ship("carrier", 4, "y", [12, 22, 32, 42]);
 // const ship2 = new Ship("battleship", 3, "x", [24, 25, 26]);
 // gameboard[12].ship = {
@@ -139,11 +36,12 @@ const renderCross = () => `
                             <div class="horizontal"></div>
                             <div class="vertical"></div>
                           </div>
-`;
+                          `;
 
 const renderShip = (ship) => {
   const shipCells = [];
   const shipAxis = ship.axis === "x" ? "draggable-x" : "draggable-y";
+  const dragged = ship.coords.length !== 0 ? "dragged" : "";
   let shipStyle;
   if (ship.axis === "x") {
     shipStyle = `style="grid-template-columns: repeat(${ship.shipLength}, var(--cell-width));"`;
@@ -157,7 +55,7 @@ const renderShip = (ship) => {
   }
 
   const shipContainer = `
-    <div class="draggable dragged ${shipAxis}" 
+    <div class="draggable ${dragged} ${shipAxis}" 
      ${shipStyle} name="${ship.name}" draggable="true">
       ${shipCells.join("")}
     </div>
@@ -170,22 +68,35 @@ const renderShip = (ship) => {
 
 // };
 
-const renderGameboard = (container) => {
-  // renderCells(container);
-  gameboard.forEach((c, i) => {
-    let shipElem;
-    if (c.ship?.isStartCoord) {
-      shipElem = renderShip(c.ship.shipObj);
-    } else {
-      shipElem = "";
-    }
+const renderGameboard = (container, grid) => {
+  container.innerHTML = "";
 
-    const cell = `<div class="cell" coord="${i}">${shipElem}</div>`;
-    container.innerHTML += cell;
-  });
+  for (let row = 0; row < grid.length; row += 1) {
+    for (let col = 0; col < grid[0].length; col += 1) {
+      let shipElem = "";
+      if (grid[row][col].ship?.isStartCoord) {
+        shipElem = renderShip(c.ship.shipObj);
+      }
+
+      const cell = `<div class="cell" row="${row}" col="${col}">${shipElem}</div>`;
+      container.innerHTML += cell;
+    }
+  }
+
+  // gameboard.forEach((c, i) => {
+  //   let shipElem;
+  //   if (c.ship?.isStartCoord) {
+  //     shipElem = renderShip(c.ship.shipObj);
+  //   } else {
+  //     shipElem = "";
+  //   }
+
+  //   const cell = `<div class="cell" coord="${i}">${shipElem}</div>`;
+  //   container.innerHTML += cell;
+  // });
 };
 
-const resetShipsContainer = (container) => {
+const resetShipsContainer = (container, allShips) => {
   container.innerHTML = "";
   container.innerHTML += `
                         <div class="ship-row">
@@ -259,17 +170,9 @@ const resetShipsContainer = (container) => {
   `;
 };
 
-const resetGameboard = (container) => {
-  container.innerHTML = "";
-  gameboard = [];
-  for (let i = 0; i < 100; i++) {
-    gameboard.push({
-      isMarked: false,
-      ship: false,
-    });
-  }
-
-  renderGameboard(container);
+const resetGameboard = (container, gameboard) => {
+  gameboard.initiateGameboard();
+  renderGameboard(container, gameboard.grid);
 };
 
 export { renderGameboard, resetShipsContainer, resetGameboard };
