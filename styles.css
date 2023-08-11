@@ -37,7 +37,7 @@
 }
 
 .ships-container {
-  width: 300px;
+  width: 250px;
 }
 
 .ship-container {
@@ -107,7 +107,7 @@
   border: thin solid blue;
   background-color: lightblue;
   opacity: 0.6;
-  cursor: move;
+  cursor: pointer !important;
 }
 
 .draggable-x {
@@ -144,3 +144,5 @@
 .hide {
   display: none;
 }
+
+/* Grabbing */
