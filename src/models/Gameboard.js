@@ -2,7 +2,9 @@ import Ship from "./Ship";
 
 export default class Gameboard {
   SIZE = 10;
+
   grid = [];
+
   allShips = {};
 
   initiateGameboard() {
@@ -17,21 +19,38 @@ export default class Gameboard {
       }
       this.grid.push(row);
     }
+
+    // Reset all ships coords
+    Object.values(this.allShips).forEach((ship) => {
+      ship.coords = [];
+    });
+
+    this.allShips = {};
   }
 
-  placeShip(newShip, coords) {
+  placeShip(newShip, axis, coords) {
     coords.forEach((c, i) => {
       const pos = this.grid[c[0]][c[1]];
       pos.ship = {
-        isStartCoord: i === 0 ? true : false,
+        isStartCoord: i === 0,
         shipObj: newShip,
       };
     });
 
-    this.allShips[newShip.name] = newShip;
+    newShip.axis = axis;
     newShip.coords = coords;
+    this.allShips[newShip.name] = newShip;
   }
 
+  repositionShip(theShip, newAxis, newCoords) {
+    theShip.coords.forEach((c) => {
+      this.grid[c[0]][c[1]].ship = false;
+    });
+
+    this.placeShip(theShip, newAxis, newCoords);
+  }
+
+  // Can't take the function inside the Ship class cause the coords parameter is not of Ship object.
   getAdjacentsForAxisX(coords) {
     const adjacents = [];
 
@@ -61,30 +80,22 @@ export default class Gameboard {
     adjacents.push(head, headNeighbor, tail, tailNeighbor);
 
     for (let i = 1; i !== coords.length + 2; i += 1) {
-      adjacents.push([headNeighbor[0], headNeighbor[1] + i]);
-      adjacents.push([tailNeighbor[0], tailNeighbor[1] - i]);
+      adjacents.push([headNeighbor[0] + i, headNeighbor[1]]);
+      adjacents.push([tailNeighbor[0] - i, tailNeighbor[1]]);
     }
 
     return adjacents;
   }
 
   AreCoordsInGrid(coords) {
-    const val = coords.some((c) => {
-      const row = this.grid[c[0]];
-      if (row && row[c[1]]) {
-        return false;
-      }
-      return true;
-    });
-
-    return !val;
+    return coords.every((c) => this.grid[c[0]] && this.grid[c[0]][c[1]]);
   }
 
-  isValidLocation(shipToPlace, coords) {
+  isValidLocation(shipName, shipAxis, coords) {
     if (!this.AreCoordsInGrid(coords)) return false;
 
     let coordsToCheck;
-    if (shipToPlace.axis === "x") {
+    if (shipAxis === "x") {
       coordsToCheck = [...this.getAdjacentsForAxisX(coords), ...coords];
     } else {
       coordsToCheck = [...this.getAdjacentsForAxisY(coords), ...coords];
@@ -95,7 +106,7 @@ export default class Gameboard {
       const row = this.grid[c[0]];
       const pos = row ? row[c[1]] : false;
 
-      return pos && pos.ship && pos.ship.shipObj.name !== shipToPlace.name;
+      return pos && pos.ship && pos.ship.shipObj.name !== shipName;
     });
 
     return !isInvalid; // If none of them are invalid, the location is valid

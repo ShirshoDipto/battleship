@@ -45,20 +45,20 @@
   border: 1px dashed blue;
 }
 
-.carrier-container {
-  width: calc(4*var(--cell-width));
+.len4-container {
+  width: calc(4*var(--cell-width) + 4px);
 }
 
-.battleship-container {
-  width: calc(3*var(--cell-width));
+.len3-container {
+  width: calc(3*var(--cell-width) + 4px);
 }
 
-.submarine-container {
-  width: calc(2*var(--cell-width));
+.len2-container {
+  width: calc(2*var(--cell-width) + 4px);
 }
 
-.destroyer-container {
-  width: calc(var(--cell-width));
+.len1-container {
+  width: calc(var(--cell-width) + 4px);
 }
 
 .ship-row {
@@ -107,7 +107,7 @@
   border: thin solid blue;
   background-color: lightblue;
   opacity: 0.6;
-  cursor: pointer !important;
+  cursor: move;
 }
 
 .draggable-x {
@@ -125,6 +125,7 @@
 .dragged {
   position: absolute;
   z-index: 1;
+  cursor: pointer;
 }
 
 .dragging {
@@ -132,7 +133,7 @@
     border: thin solid rgb(132, 132, 210);
 }
 
-.red {
+.hovered {
     background-color: greenyellow;
 }
 
