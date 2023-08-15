@@ -11,36 +11,23 @@ const gameboardGrid = document.querySelector(".main-grid");
 const newGameboard = new Gameboard();
 newGameboard.initiateGameboard();
 
-let allShips = [];
-
 // has to be like this because at the beginning, the ships are not stored in the gameboard
-const ship1 = new Ship("carrier", 4, "x");
-const ship2 = new Ship("battleship1", 3, "x");
-const ship3 = new Ship("battleship2", 3, "x");
-const ship4 = new Ship("submarine1", 2, "x");
-const ship5 = new Ship("submarine2", 2, "x");
-const ship6 = new Ship("submarine3", 2, "x");
-const ship7 = new Ship("destroyer1", 1, "x");
-const ship8 = new Ship("destroyer2", 1, "x");
-const ship9 = new Ship("destroyer3", 1, "x");
-const ship10 = new Ship("destroyer4", 1, "x");
+let allShips = [
+  new Ship("carrier", 4, "x"),
+  new Ship("battleship1", 3, "x"),
+  new Ship("battleship2", 3, "x"),
+  new Ship("submarine1", 2, "x"),
+  new Ship("submarine2", 2, "x"),
+  new Ship("submarine3", 2, "x"),
+  new Ship("destroyer1", 1, "x"),
+  new Ship("destroyer2", 1, "x"),
+  new Ship("destroyer3", 1, "x"),
+  new Ship("destroyer4", 1, "x"),
+];
 
 let shipsContainer = document.querySelector(".ships-container");
 let draggables;
 let cells;
-
-allShips.push(
-  ship1,
-  ship2,
-  ship3,
-  ship4,
-  ship5,
-  ship6,
-  ship7,
-  ship8,
-  ship9,
-  ship10
-);
 
 function resetShips() {
   const newShips = allShips.map((ship) => {
@@ -194,6 +181,11 @@ function rotateShip() {
     newGameboard.repositionShip(shipToRotate, newAxis, newCoords);
     renderGameboard(gameboardGrid, newGameboard.grid);
     setEventListeners();
+  } else {
+    this.classList.add("invalid");
+    setTimeout(() => {
+      this.classList.remove("invalid");
+    }, 500);
   }
 }
 
@@ -205,6 +197,13 @@ buttons.forEach((button) => {
     renderShipsContainer(shipsContainer, allShips);
     setEventListeners();
   });
+});
+
+const randomButton = document.getElementById("random-button");
+randomButton.addEventListener("click", (e) => {
+  newGameboard.initiateGameboard();
+  newGameboard.randomizeBoard();
+  renderGameboard(gameboardGrid, newGameboard.grid);
 });
 
 renderGameboard(gameboardGrid, newGameboard.grid);

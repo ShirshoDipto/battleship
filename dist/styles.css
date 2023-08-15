@@ -137,6 +137,10 @@
     background-color: greenyellow;
 }
 
+.invalid {
+  border: thin solid red;
+}
+
 .main-bottom {
   margin-top: 30px;
 }

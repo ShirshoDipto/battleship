@@ -357,4 +357,13 @@ describe("Testing isValidLocation when the board is NOT empty", () => {
       testGameboard.isValidLocation(ship.name, ship.axis, coords)
     ).toBeFalsy();
   });
+
+  test("Checking random functions", () => {
+    console.log(testGameboard.generateShips());
+  });
+
+  test("Checking randomizeBoard", () => {
+    testGameboard.randomizeBoard();
+    console.log(testGameboard.grid);
+  });
 });

@@ -112,11 +112,65 @@ export default class Gameboard {
     return !isInvalid; // If none of them are invalid, the location is valid
   }
 
+  generateRandomCoord() {
+    return Math.floor(Math.random() * 10);
+  }
+
+  generateRandomAxis() {
+    const num = Math.floor(Math.random() * 2);
+    return num === 0 ? "x" : "y";
+  }
+
+  generateRandomCoords(ship) {
+    const coords = [[this.generateRandomCoord(), this.generateRandomCoord()]];
+
+    for (let i = 1; i < ship.shipLength; i += 1) {
+      if (ship.axis === "x") {
+        coords.push([coords[0][0], coords[0][1] + i]);
+      } else {
+        coords.push([coords[0][0] + i, coords[0][1]]);
+      }
+    }
+
+    return coords;
+  }
+
+  generateShips() {
+    const randomShips = [
+      new Ship("carrier", 4, this.generateRandomAxis()),
+      new Ship("battleship1", 3, this.generateRandomAxis()),
+      new Ship("battleship2", 3, this.generateRandomAxis()),
+      new Ship("submarine1", 2, this.generateRandomAxis()),
+      new Ship("submarine2", 2, this.generateRandomAxis()),
+      new Ship("submarine3", 2, this.generateRandomAxis()),
+      new Ship("destroyer1", 1, "x"),
+      new Ship("destroyer2", 1, "x"),
+      new Ship("destroyer3", 1, "x"),
+      new Ship("destroyer4", 1, "x"),
+    ];
+
+    return randomShips;
+  }
+
+  randomizeBoard() {
+    const ships = this.generateShips();
+    ships.forEach((s) => {
+      let isShipPlaced = false;
+      while (!isShipPlaced) {
+        const randomCoords = this.generateRandomCoords(s);
+        if (this.isValidLocation(s.name, s.axis, randomCoords)) {
+          this.placeShip(s, s.axis, randomCoords);
+          isShipPlaced = true;
+        }
+      }
+    });
+  }
+
   receiveAttack(coord) {
     console.log(this.grid, coord);
   }
 
-  checkGameOver() {
-    console.log(this.grid);
+  isGameOver() {
+    return Object.values(this.allShips).every((ship) => ship.isSunk());
   }
 }
