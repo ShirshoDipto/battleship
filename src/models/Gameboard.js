@@ -1,21 +1,25 @@
 import Ship from "./Ship";
+import Cell from "./Cell";
 
 export default class Gameboard {
   SIZE = 10;
 
   grid = [];
 
+  lastAttack = [];
+
   allShips = {};
+
+  constructor(playerId) {
+    this.playerId = playerId;
+  }
 
   initiateGameboard() {
     this.grid = [];
     for (let i = 0; i < this.SIZE; i += 1) {
       const row = [];
       for (let j = 0; j < this.SIZE; j += 1) {
-        row.push({
-          markStatus: false,
-          ship: false,
-        });
+        row.push(new Cell(this.playerId));
       }
       this.grid.push(row);
     }
@@ -24,8 +28,6 @@ export default class Gameboard {
     Object.values(this.allShips).forEach((ship) => {
       ship.coords = [];
     });
-
-    this.allShips = {};
   }
 
   placeShip(newShip, axis, coords) {
@@ -44,7 +46,8 @@ export default class Gameboard {
 
   repositionShip(theShip, newAxis, newCoords) {
     theShip.coords.forEach((c) => {
-      this.grid[c[0]][c[1]].ship = false;
+      const cell = this.grid[c[0]][c[1]];
+      cell.ship = false;
     });
 
     this.placeShip(theShip, newAxis, newCoords);
@@ -113,7 +116,7 @@ export default class Gameboard {
   }
 
   generateRandomCoord() {
-    return Math.floor(Math.random() * 10);
+    return Math.floor(Math.random() * this.SIZE);
   }
 
   generateRandomAxis() {
@@ -135,26 +138,15 @@ export default class Gameboard {
     return coords;
   }
 
-  generateShips() {
-    const randomShips = [
-      new Ship("carrier", 4, this.generateRandomAxis()),
-      new Ship("battleship1", 3, this.generateRandomAxis()),
-      new Ship("battleship2", 3, this.generateRandomAxis()),
-      new Ship("submarine1", 2, this.generateRandomAxis()),
-      new Ship("submarine2", 2, this.generateRandomAxis()),
-      new Ship("submarine3", 2, this.generateRandomAxis()),
-      new Ship("destroyer1", 1, "x"),
-      new Ship("destroyer2", 1, "x"),
-      new Ship("destroyer3", 1, "x"),
-      new Ship("destroyer4", 1, "x"),
-    ];
-
-    return randomShips;
+  shuffleShipsAxis(ships) {
+    Object.values(ships).forEach((s) => {
+      s.axis = this.generateRandomAxis();
+    });
   }
 
-  randomizeBoard() {
-    const ships = this.generateShips();
-    ships.forEach((s) => {
+  randomizeBoard(ships) {
+    this.shuffleShipsAxis(ships);
+    Object.values(ships).forEach((s) => {
       let isShipPlaced = false;
       while (!isShipPlaced) {
         const randomCoords = this.generateRandomCoords(s);
@@ -167,10 +159,17 @@ export default class Gameboard {
   }
 
   receiveAttack(coord) {
-    console.log(this.grid, coord);
+    if (this.lastAttack.length !== 0) {
+      const cell = this.grid[this.lastAttack[0]][this.lastAttack[1]];
+      cell.markStatus = "hit";
+    }
+
+    this.lastAttack = coord;
+    const cellToAttack = this.grid[coord[0]][coord[1]];
+    cellToAttack.markStatus = "last";
   }
 
   isGameOver() {
-    return Object.values(this.allShips).every((ship) => ship.isSunk());
+    return this.allShips.every((ship) => ship.isSunk());
   }
 }

@@ -1,8 +1,15 @@
 export default class Ship {
   numHits = 0;
+
   coords = [];
+
   isDraggable = true;
+
   distanceFromMidToMouse = [];
+
+  initialX = 0;
+
+  initialY = 0;
 
   constructor(name, shipLength, axis) {
     this.name = name;

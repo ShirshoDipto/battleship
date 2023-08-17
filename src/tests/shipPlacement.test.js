@@ -45,6 +45,69 @@ describe("Testing placeShip function", () => {
   });
 });
 
+describe("Testing repositionShip function", () => {
+  const coords1 = [[1, 1]];
+  const ship1 = new Ship("destroyer1", 1, "x");
+
+  const coords2 = [
+    [5, 2],
+    [5, 3],
+  ];
+  const ship2 = new Ship("submarine1", 2, "x");
+
+  const coords3 = [
+    [5, 5],
+    [6, 5],
+    [7, 5],
+  ];
+  const ship3 = new Ship("battleship1", 3, "y");
+
+  const coords4 = [
+    [1, 7],
+    [2, 7],
+    [3, 7],
+    [4, 7],
+  ];
+  const ship4 = new Ship("carrier", 4, "y");
+
+  const coords5 = [[9, 0]];
+  const ship5 = new Ship("destroyer2", 1, "x");
+
+  const coords6 = [
+    [6, 7],
+    [6, 8],
+    [6, 9],
+  ];
+  const ship6 = new Ship("battleship2", 3, "x");
+
+  const coords7 = [
+    [1, 4],
+    [1, 5],
+  ];
+  const ship7 = new Ship("submarine2", 2, "y");
+
+  beforeEach(() => {
+    testGameboard.placeShip(ship1, ship1.axis, coords1);
+    testGameboard.placeShip(ship2, ship2.axis, coords2);
+    testGameboard.placeShip(ship3, ship3.axis, coords3);
+    testGameboard.placeShip(ship4, ship4.axis, coords4);
+    testGameboard.placeShip(ship5, ship4.axis, coords5);
+    testGameboard.placeShip(ship6, ship6.axis, coords6);
+    testGameboard.placeShip(ship7, ship7.axis, coords7);
+  });
+
+  test("Repositions ship from start coord [1, 4] to [8, 7]", () => {
+    expect(testGameboard.grid[8][7].ship).toBeFalsy();
+    testGameboard.repositionShip(ship7, "x", [
+      [8, 7],
+      [8, 8],
+    ]);
+
+    expect(testGameboard.grid[1][4].ship).toBeFalsy();
+    expect(testGameboard.grid[8][7].ship).toBeTruthy();
+  });
+});
+
 describe("Testing isValidLocation when the board is empty", () => {
   test("Returns TRUE for ship (len 4, vertical) at the bottom-right corner", () => {
     const coords = [
@@ -359,11 +422,10 @@ describe("Testing isValidLocation when the board is NOT empty", () => {
   });
 
   test("Checking random functions", () => {
-    console.log(testGameboard.generateShips());
+    // console.log(testGameboard.generateShips());
   });
 
   test("Checking randomizeBoard", () => {
-    testGameboard.randomizeBoard();
-    console.log(testGameboard.grid);
+    // testGameboard.randomizeBoard();
   });
 });
