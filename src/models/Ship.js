@@ -39,4 +39,13 @@ export default class Ship {
 
     return newCoords;
   }
+
+  resetShipToOriginal() {
+    this.coords = [];
+    this.axis = "x";
+    this.distanceFromMidToMouse = [];
+    this.isDraggable = true;
+    this.initialX = 0;
+    this.initialY = 0;
+  }
 }

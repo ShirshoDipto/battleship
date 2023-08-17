@@ -10,53 +10,40 @@ beforeEach(() => {
 
 describe("Testing receiveAttack function", () => {
   const coords1 = [[1, 1]];
-  const ship1 = new Ship("destroyer1", 1, "x");
-
   const coords2 = [
     [5, 2],
     [5, 3],
   ];
-  const ship2 = new Ship("submarine1", 2, "x");
-
   const coords3 = [
     [5, 5],
     [6, 5],
     [7, 5],
   ];
-  const ship3 = new Ship("battleship1", 3, "y");
-
   const coords4 = [
     [1, 7],
     [2, 7],
     [3, 7],
     [4, 7],
   ];
-  const ship4 = new Ship("carrier", 4, "y");
-
   const coords5 = [[9, 0]];
-  const ship5 = new Ship("destroyer2", 1, "x");
-
   const coords6 = [
     [6, 7],
     [6, 8],
     [6, 9],
   ];
-  const ship6 = new Ship("battleship2", 3, "x");
-
   const coords7 = [
     [1, 4],
     [1, 5],
   ];
-  const ship7 = new Ship("submarine2", 2, "y");
 
   beforeEach(() => {
-    testGameboard.placeShip(ship1, ship1.axis, coords1);
-    testGameboard.placeShip(ship2, ship2.axis, coords2);
-    testGameboard.placeShip(ship3, ship3.axis, coords3);
-    testGameboard.placeShip(ship4, ship4.axis, coords4);
-    testGameboard.placeShip(ship5, ship4.axis, coords5);
-    testGameboard.placeShip(ship6, ship6.axis, coords6);
-    testGameboard.placeShip(ship7, ship7.axis, coords7);
+    testGameboard.placeShip("destroyer1", "x", coords1);
+    testGameboard.placeShip("submarine1", "x", coords2);
+    testGameboard.placeShip("battleship1", "y", coords3);
+    testGameboard.placeShip("carrier", "y", coords4);
+    testGameboard.placeShip("destroyer2", "x", coords5);
+    testGameboard.placeShip("battleship2", "x", coords6);
+    testGameboard.placeShip("submarine2", "y", coords7);
   });
 
   test("Attack on [3,3]", () => {
@@ -86,20 +73,7 @@ describe("Testing receiveAttack function", () => {
 describe("Testing randomize function", () => {
   for (let x = 0; x < 10; x += 1) {
     test("Generates multiple randomize board to verify it's functionality", () => {
-      const ships = {
-        carrier: new Ship("carrier", 4, "x"),
-        battleship1: new Ship("battleship1", 3, "x"),
-        battleship2: new Ship("battleship2", 3, "x"),
-        submarine1: new Ship("submarine1", 2, "x"),
-        submarine2: new Ship("submarine2", 2, "x"),
-        submarine3: new Ship("submarine3", 2, "x"),
-        destroyer1: new Ship("destroyer1", 1, "x"),
-        destroyer2: new Ship("destroyer2", 1, "x"),
-        destroyer3: new Ship("destroyer3", 1, "x"),
-        destroyer4: new Ship("destroyer4", 1, "x"),
-      };
-
-      testGameboard.randomizeBoard(ships);
+      testGameboard.randomizeBoard();
       const allShips = testGameboard.allShips;
 
       const coordsForShips = [];

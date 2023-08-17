@@ -1,27 +1,11 @@
 import * as prep from "./displayControllers/prepInterface";
 import Gameboard from "./models/Gameboard";
 import Player from "./models/Player";
-import Ship from "./models/Ship";
 
 let main = document.querySelector(".main");
-let gameboardGrid = document.querySelector(".main-grid");
-// const newGameboard = new Gameboard();
-// newGameboard.initiateGameboard();
 
 const players = [new Player()];
 const gameboards = [];
-const allShips = {
-  carrier: new Ship("carrier", 4, "x"),
-  battleship1: new Ship("battleship1", 3, "x"),
-  battleship2: new Ship("battleship2", 3, "x"),
-  submarine1: new Ship("submarine1", 2, "x"),
-  submarine2: new Ship("submarine2", 2, "x"),
-  submarine3: new Ship("submarine3", 2, "x"),
-  destroyer1: new Ship("destroyer1", 1, "x"),
-  destroyer2: new Ship("destroyer2", 1, "x"),
-  destroyer3: new Ship("destroyer3", 1, "x"),
-  destroyer4: new Ship("destroyer4", 1, "x"),
-};
 
 function handleGameOption(e) {
   if (this.textContent === "vs Friend") {
@@ -32,6 +16,7 @@ function handleGameOption(e) {
     gameboards.push(new Gameboard("host"), new Gameboard("ai"));
     gameboards[0].initiateGameboard();
     gameboards[1].initiateGameboard();
+    gameboards[1].randomizeBoard();
     prep.renderPreparations(main, gameboards[0], players[0].id, true);
   }
 }
@@ -40,38 +25,6 @@ const gameOptions = document.querySelectorAll(".game-option");
 gameOptions.forEach((option) => {
   option.addEventListener("click", handleGameOption);
 });
-
-// function resetShips() {
-//   const newShips = allShips.map((ship) => {
-//     ship.axis = "x";
-//     ship.coords = [];
-//     return ship;
-//   });
-
-//   allShips = newShips;
-// }
-
-const setEventListeners = () => {
-  shipsContainer = document.querySelector(".ships-container");
-  draggables = document.querySelectorAll(".draggable");
-  cells = document.querySelectorAll(".cell");
-  gameboardGrid = document.querySelector(".main-grid");
-
-  draggables.forEach((d) => {
-    d.addEventListener("dragstart", getMeasurements);
-    d.addEventListener("drag", displayDraggablePositions);
-    d.addEventListener("dragend", placeShipOnBoard);
-    d.addEventListener("click", rotateShip);
-  });
-
-  cells.forEach((cell) => {
-    cell.addEventListener("dragover", (e) => e.preventDefault());
-  });
-};
-
-// const getShip = (elem) => {
-//   return allShips.find((ship) => ship.name === elem.getAttribute("name"));
-// };
 
 const getElemAtPosition = (e, coord) => {
   const clientXDistance = e.clientX - coord[0];
@@ -101,11 +54,11 @@ const getOriginalShipStatus = (elem, ship) => {
 const getMeasurements = (e) => {
   e.target.classList.add("dragging");
   const shipCells = e.target.querySelectorAll(".ship-cell");
-  const theShip = allShips[e.target.getAttribute("name")];
+  const theShip = gameboards[0].allShips[e.target.getAttribute("name")];
+
   shipCells.forEach((cell) => {
     const box = cell.getBoundingClientRect();
     const midCoord = [box.width / 2 + box.x, box.height / 2 + box.y];
-
     theShip.distanceFromMidToMouse.push([
       e.clientX - midCoord[0],
       e.clientY - midCoord[1],
@@ -125,7 +78,7 @@ const isSamePosition = (e, ship) => {
 
 const displayDraggablePositions = (e) => {
   let hoveredCells = [];
-  const theShip = allShips[e.target.getAttribute("name")];
+  const theShip = gameboards[0].allShips[e.target.getAttribute("name")];
 
   if (isSamePosition(e, theShip)) return;
   const cells = document.querySelectorAll(".cell");
@@ -161,8 +114,9 @@ const displayDraggablePositions = (e) => {
 };
 
 const placeShipOnBoard = (e) => {
-  const theShip = allShips[e.target.getAttribute("name")];
+  const theShip = gameboards[0].allShips[e.target.getAttribute("name")];
   const cells = document.querySelectorAll(".cell");
+
   if (!theShip.isDraggable) {
     getOriginalShipStatus(e.target, theShip);
     return;
@@ -174,19 +128,15 @@ const placeShipOnBoard = (e) => {
 
   const coords = getCoords(hoveredCells);
   if (theShip.coords.length === 0) {
-    gameboards[0].placeShip(theShip, theShip.axis, coords);
+    gameboards[0].placeShip(theShip.name, theShip.axis, coords);
   } else {
-    gameboards[0].repositionShip(theShip, theShip.axis, coords);
+    gameboards[0].repositionShip(theShip.name, theShip.axis, coords);
   }
 
   const elemAtPosition = getElemAtPosition(
     e,
     theShip.distanceFromMidToMouse[0]
   );
-
-  console.log(gameboards[0].grid);
-  console.log(gameboards[0].allShips);
-  console.log(allShips);
 
   if (elemAtPosition.classList.contains("cell")) {
     elemAtPosition.appendChild(e.target);
@@ -201,7 +151,7 @@ const placeShipOnBoard = (e) => {
 };
 
 function rotateShip() {
-  const shipToRotate = allShips[this.getAttribute("name")];
+  const shipToRotate = gameboards[0].allShips[this.getAttribute("name")];
   if (shipToRotate.coords.length === 0) return;
 
   const newCoords = shipToRotate.getCoordsForRotation();
@@ -209,9 +159,8 @@ function rotateShip() {
   const gameboardGrid = document.querySelector(".main-grid");
 
   if (gameboards[0].isValidLocation(shipToRotate.name, newAxis, newCoords)) {
-    gameboards[0].repositionShip(shipToRotate, newAxis, newCoords);
+    gameboards[0].repositionShip(shipToRotate.name, newAxis, newCoords);
     prep.renderGameboard(gameboardGrid, gameboards[0], players[0].id, true);
-    console.log(gameboards[0].grid);
   } else {
     this.classList.add("invalid");
     setTimeout(() => {
@@ -224,8 +173,7 @@ const randomizeBoard = () => {
   const gameboardGrid = document.querySelector(".main-grid");
   const shipsContainer = document.querySelector(".ships-container");
   gameboards[0].initiateGameboard();
-  gameboards[0].randomizeBoard(allShips);
-  console.log(gameboards[0].grid);
+  gameboards[0].randomizeBoard();
   prep.renderGameboard(gameboardGrid, gameboards[0], players[0].id, true);
   prep.renderShipsContainer(shipsContainer, false);
 };

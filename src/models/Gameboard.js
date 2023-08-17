@@ -8,7 +8,18 @@ export default class Gameboard {
 
   lastAttack = [];
 
-  allShips = {};
+  allShips = {
+    carrier: new Ship("carrier", 4, "x"),
+    battleship1: new Ship("battleship1", 3, "x"),
+    battleship2: new Ship("battleship2", 3, "x"),
+    submarine1: new Ship("submarine1", 2, "x"),
+    submarine2: new Ship("submarine2", 2, "x"),
+    submarine3: new Ship("submarine3", 2, "x"),
+    destroyer1: new Ship("destroyer1", 1, "x"),
+    destroyer2: new Ship("destroyer2", 1, "x"),
+    destroyer3: new Ship("destroyer3", 1, "x"),
+    destroyer4: new Ship("destroyer4", 1, "x"),
+  };
 
   constructor(playerId) {
     this.playerId = playerId;
@@ -24,33 +35,34 @@ export default class Gameboard {
       this.grid.push(row);
     }
 
-    // Reset all ships coords
+    // Reset all ships
     Object.values(this.allShips).forEach((ship) => {
-      ship.coords = [];
+      ship.resetShipToOriginal();
     });
   }
 
-  placeShip(newShip, axis, coords) {
+  placeShip(name, axis, coords) {
+    const theShip = this.allShips[name];
     coords.forEach((c, i) => {
-      const pos = this.grid[c[0]][c[1]];
-      pos.ship = {
+      const cell = this.grid[c[0]][c[1]];
+      cell.ship = {
         isStartCoord: i === 0,
-        shipObj: newShip,
+        shipObj: theShip,
       };
     });
 
-    newShip.axis = axis;
-    newShip.coords = coords;
-    this.allShips[newShip.name] = newShip;
+    theShip.axis = axis;
+    theShip.coords = coords;
   }
 
-  repositionShip(theShip, newAxis, newCoords) {
+  repositionShip(name, newAxis, newCoords) {
+    const theShip = this.allShips[name];
     theShip.coords.forEach((c) => {
       const cell = this.grid[c[0]][c[1]];
       cell.ship = false;
     });
 
-    this.placeShip(theShip, newAxis, newCoords);
+    this.placeShip(name, newAxis, newCoords);
   }
 
   // Can't take the function inside the Ship class cause the coords parameter is not of Ship object.
@@ -138,20 +150,20 @@ export default class Gameboard {
     return coords;
   }
 
-  shuffleShipsAxis(ships) {
-    Object.values(ships).forEach((s) => {
+  shuffleShipsAxis() {
+    Object.values(this.allShips).forEach((s) => {
       s.axis = this.generateRandomAxis();
     });
   }
 
-  randomizeBoard(ships) {
-    this.shuffleShipsAxis(ships);
-    Object.values(ships).forEach((s) => {
+  randomizeBoard() {
+    this.shuffleShipsAxis();
+    Object.values(this.allShips).forEach((s) => {
       let isShipPlaced = false;
       while (!isShipPlaced) {
         const randomCoords = this.generateRandomCoords(s);
         if (this.isValidLocation(s.name, s.axis, randomCoords)) {
-          this.placeShip(s, s.axis, randomCoords);
+          this.placeShip(s.name, s.axis, randomCoords);
           isShipPlaced = true;
         }
       }
