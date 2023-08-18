@@ -2,17 +2,15 @@ import * as prep from "./displayControllers/prepInterface";
 import Gameboard from "./models/Gameboard";
 import Player from "./models/Player";
 
-let main = document.querySelector(".main");
-
-const players = [new Player()];
-const gameboards = [];
+const main = document.querySelector(".main");
+let players = [];
+let gameboards = [];
 
 function handleGameOption(e) {
   if (this.textContent === "vs Friend") {
-    // here goes the multiplayer handling code
+    // Multiplayer handling code
   } else {
-    players[0].id = "host";
-    players.push(new Player("ai"));
+    players.push(new Player("host"), new Player("ai"));
     gameboards.push(new Gameboard("host"), new Gameboard("ai"));
     gameboards[0].initiateGameboard();
     gameboards[1].initiateGameboard();
@@ -186,32 +184,11 @@ const resetBoard = () => {
   prep.renderShipsContainer(shipsContainer, true);
 };
 
-// const buttons = document.querySelectorAll(".bottom-section-button");
-// buttons.forEach((button) => {
-//   button.addEventListener("click", (e) => {
-//     resetShips();
-//     prep.resetGameboard(gameboardGrid, newGameboard);
-//     prep.renderShipsContainer(shipsContainer, allShips);
-//     setEventListeners();
-//   });
-// });
-
-// const randomButton = document.getElementById("random-button");
-// randomButton.addEventListener("click", (e) => {
-//   newGameboard.initiateGameboard();
-//   newGameboard.randomizeBoard();
-//   prep.renderGameboard(gameboardGrid, newGameboard);
-// });
-
-// prep.renderGameboard(gameboardGrid, newGameboard);
-// prep.renderShipsContainer(shipsContainer, allShips);
-// setEventListeners();
-
-// Once the selection is made (let's say the option was the AI)
-//  create player
-//  store players
-//  let the player prepare the board
-//  store the boards
+function handleBackHome() {
+  players = [];
+  gameboards = [];
+  prep.renderHome(main);
+}
 
 export {
   getMeasurements,
@@ -221,4 +198,5 @@ export {
   handleGameOption,
   randomizeBoard,
   resetBoard,
+  handleBackHome,
 };

@@ -110,153 +110,94 @@ const renderGameboard = (container, gameboard, playerId, isPreparing) => {
   });
 };
 
-// const renderShipsContainer = (container, allShips) => {
-//   const allShipsHTML = allShips.map((ship) => {
-//     return renderShip(ship);
-//   });
-
-//   container.innerHTML = "";
-//   container.innerHTML += `
-//                         <div class="ship-row">
-//                           <div class="len4-container ship-container" name="carrier">
-//                             ${allShipsHTML[0]}
-//                           </div>
-//                         </div>
-//                         <div class="ship-row">
-//                           <div class="len3-container ship-container" name="battleship1">
-//                             ${allShipsHTML[1]}
-//                           </div>
-//                           <div class="len3-container ship-container" name="battleship2">
-//                             ${allShipsHTML[2]}
-//                           </div>
-//                         </div>
-//                         <div class="ship-row">
-//                           <div class="len2-container ship-container" name="submarine1">
-//                             ${allShipsHTML[3]}
-//                           </div>
-//                           <div class="len2-container ship-container" name="submarine2">
-//                             ${allShipsHTML[4]}
-//                           </div>
-//                           <div class="len2-container ship-container" name="submarine3">
-//                             ${allShipsHTML[5]}
-//                           </div>
-//                         </div>
-//                         <div class="ship-row">
-//                           <div class="len1-container ship-container" name="destroyer1">
-//                             ${allShipsHTML[6]}
-//                           </div>
-//                           <div class="len1-container ship-container" name="destroyer2">
-//                             ${allShipsHTML[7]}
-//                           </div>
-//                           <div class="len1-container ship-container" name="destroyer3">
-//                             ${allShipsHTML[8]}
-//                           </div>
-//                           <div class="len1-container ship-container" name="destroyer4">
-//                             ${allShipsHTML[9]}
-//                           </div>
-//                         </div>
-//   `;
-// };
-
 const renderShipsContainer = (container, isShipShowing) => {
   container.innerHTML = `
                         <div class="ships-container">
                           <div class="ship-row">
                             <div class="len4-container ship-container" name="carrier">
-                              
-                            <div class="draggable draggable-x ${
-                              isShipShowing ? "" : "hide"
-                            }" style="grid-template-columns: repeat(4, var(--cell-width));" name="carrier" draggable="true">
-                              <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
-                            </div>
-                          
+                              <div class="draggable draggable-x ${
+                                isShipShowing ? "" : "hide"
+                              }" style="grid-template-columns: repeat(4, var(--cell-width));" name="carrier" draggable="true">
+                                <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
+                              </div>
                             </div>
                           </div>
+
                           <div class="ship-row">
                             <div class="len3-container ship-container" name="battleship1">
-                              
-                            <div class=" ${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x " style="grid-template-columns: repeat(3, var(--cell-width));" name="battleship1" draggable="true">
-                              <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
+                              <div class=" ${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x " style="grid-template-columns: repeat(3, var(--cell-width));" name="battleship1" draggable="true">
+                                <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
+                              </div>
                             </div>
-                          
-                            </div>
+
                             <div class="len3-container ship-container" name="battleship2">
-                              
-                            <div class="${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x" style="grid-template-columns: repeat(3, var(--cell-width));" name="battleship2" draggable="true">
-                              <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
-                            </div>
-                          
+                              <div class="${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x" style="grid-template-columns: repeat(3, var(--cell-width));" name="battleship2" draggable="true">
+                                <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
+                              </div>
                             </div>
                           </div>
+
                           <div class="ship-row">
                             <div class="len2-container ship-container" name="submarine1">
-                              
-                            <div class="${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x" style="grid-template-columns: repeat(2, var(--cell-width));" name="submarine1" draggable="true">
-                              <div class="ship-cell"></div><div class="ship-cell"></div>
+                              <div class="${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x" style="grid-template-columns: repeat(2, var(--cell-width));" name="submarine1" draggable="true">
+                                <div class="ship-cell"></div><div class="ship-cell"></div>
+                              </div>
                             </div>
-                          
-                            </div>
+
                             <div class="len2-container ship-container" name="submarine2">
-                              
-                            <div class="${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x" style="grid-template-columns: repeat(2, var(--cell-width));" name="submarine2" draggable="true">
-                              <div class="ship-cell"></div><div class="ship-cell"></div>
+                              <div class="${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x" style="grid-template-columns: repeat(2, var(--cell-width));" name="submarine2" draggable="true">
+                                <div class="ship-cell"></div><div class="ship-cell"></div>
+                              </div>
                             </div>
-                          
-                            </div>
+
                             <div class="len2-container ship-container" name="submarine3">
-                              
-                            <div class="${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x" style="grid-template-columns: repeat(2, var(--cell-width));" name="submarine3" draggable="true">
-                              <div class="ship-cell"></div><div class="ship-cell"></div>
-                            </div>
-                          
+                              <div class="${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x" style="grid-template-columns: repeat(2, var(--cell-width));" name="submarine3" draggable="true">
+                                <div class="ship-cell"></div><div class="ship-cell"></div>
+                              </div>
                             </div>
                           </div>
+
                           <div class="ship-row">
                             <div class="len1-container ship-container" name="destroyer1">
-                              
-                            <div class="${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x" style="grid-template-columns: repeat(1, var(--cell-width));" name="destroyer1" draggable="true">
-                              <div class="ship-cell"></div>
+                              <div class="${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x" style="grid-template-columns: repeat(1, var(--cell-width));" name="destroyer1" draggable="true">
+                                <div class="ship-cell"></div>
+                              </div>
                             </div>
-                          
-                            </div>
+
                             <div class="len1-container ship-container" name="destroyer2">
-                              
-                            <div class="${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x" style="grid-template-columns: repeat(1, var(--cell-width));" name="destroyer2" draggable="true">
-                              <div class="ship-cell"></div>
+                              <div class="${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x" style="grid-template-columns: repeat(1, var(--cell-width));" name="destroyer2" draggable="true">
+                                <div class="ship-cell"></div>
+                              </div>
                             </div>
-                          
-                            </div>
+
                             <div class="len1-container ship-container" name="destroyer3">
-                              
-                            <div class="${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x" style="grid-template-columns: repeat(1, var(--cell-width));" name="destroyer3" draggable="true">
-                              <div class="ship-cell"></div>
+                              <div class="${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x" style="grid-template-columns: repeat(1, var(--cell-width));" name="destroyer3" draggable="true">
+                                <div class="ship-cell"></div>
+                              </div>
                             </div>
-                          
-                            </div>
+
                             <div class="len1-container ship-container" name="destroyer4">
-                              
-                            <div class="${
-                              isShipShowing ? "" : "hide"
-                            } draggable draggable-x" style="grid-template-columns: repeat(1, var(--cell-width));" name="destroyer4" draggable="true">
-                              <div class="ship-cell"></div>
-                            </div>
-                          
+                              <div class="${
+                                isShipShowing ? "" : "hide"
+                              } draggable draggable-x" style="grid-template-columns: repeat(1, var(--cell-width));" name="destroyer4" draggable="true">
+                                <div class="ship-cell"></div>
+                              </div>
                             </div>
                           </div>
                         </div>`;
@@ -271,11 +212,6 @@ const renderShipsContainer = (container, isShipShowing) => {
 };
 
 const renderPreparations = (container, gameboard, playerId, isPreparing) => {
-  const buttons = container.querySelectorAll(".game-option");
-  buttons.forEach((b) => {
-    b.removeEventListener("click", gameloop.handleGameOption);
-  });
-
   container.innerHTML = "";
   container.innerHTML = `
                           <div class="main-wrapper">
@@ -314,11 +250,14 @@ const renderPreparations = (container, gameboard, playerId, isPreparing) => {
                             </div>
                             <div class="main-bottom">
                               <div class="board-options-wrapper">
-                                <div class="options-container">
+                                <div class="board-options-container">
                                   <a href="javascript:;" id="board-randomize" class="board-option">Randomize</a>
                                   <a href="javascript:;" id="board-reset" class="board-option">Reset</a>
+                                </div>
+                                <div class="prep-buttons-container">
+                                  <button class="prep-button" id="back-from-prep">Back</button>
+                                  <button class="prep-button id="start-from-prep"">Start</button>
                                 </div>              
-                                <button class="start-button">Start</button>
                               </div>
                             </div>
                           </div>  
@@ -326,13 +265,41 @@ const renderPreparations = (container, gameboard, playerId, isPreparing) => {
 
   const mainGrid = container.querySelector(".main-grid");
   const shipsContainer = container.querySelector(".ships-container");
-  renderShipsContainer(shipsContainer, true);
-  renderGameboard(mainGrid, gameboard, playerId, isPreparing);
-
   const baordRandomize = container.querySelector("#board-randomize");
   const boardReset = container.querySelector("#board-reset");
+  const backButton = container.querySelector("#back-from-prep");
+  const startButton = container.querySelector("#start-from-prep");
+
+  renderShipsContainer(shipsContainer, true);
+  renderGameboard(mainGrid, gameboard, playerId, isPreparing);
   baordRandomize.addEventListener("click", gameloop.randomizeBoard);
   boardReset.addEventListener("click", gameloop.resetBoard);
+  backButton.addEventListener("click", gameloop.handleBackHome);
 };
 
-export { renderGameboard, renderShipsContainer, renderPreparations };
+function renderHome(container) {
+  container.innerHTML = "";
+  container.innerHTML += `
+                        <div class="main-wrapper">
+                          <div class="main-top"></div>
+                            <div class="main-middle">
+                                <div class="opitons-wrapper">
+                                    <button class="game-option">vs Friend</button>
+                                    <button class="game-option">vs AI</button>
+                                </div>
+                            </div>
+                          <div class="main-bottom"></div>
+                        </div>
+                        `;
+  const buttons = container.querySelectorAll("button");
+  buttons.forEach((button) => {
+    button.addEventListener("click", gameloop.handleGameOption);
+  });
+}
+
+export {
+  renderGameboard,
+  renderShipsContainer,
+  renderPreparations,
+  renderHome,
+};
