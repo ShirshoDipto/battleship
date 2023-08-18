@@ -1,4 +1,5 @@
 import * as prep from "./displayControllers/prepInterface";
+import * as gp from "./displayControllers/gameplay";
 import Gameboard from "./models/Gameboard";
 import Player from "./models/Player";
 
@@ -154,11 +155,11 @@ function rotateShip() {
 
   const newCoords = shipToRotate.getCoordsForRotation();
   const newAxis = shipToRotate.axis === "x" ? "y" : "x";
-  const gameboardGrid = document.querySelector(".main-grid");
+  const boardContainer = document.querySelector(".board-container");
 
   if (gameboards[0].isValidLocation(shipToRotate.name, newAxis, newCoords)) {
     gameboards[0].repositionShip(shipToRotate.name, newAxis, newCoords);
-    prep.renderGameboard(gameboardGrid, gameboards[0], players[0].id, true);
+    prep.renderGameboard(boardContainer, gameboards[0], players[0], true);
   } else {
     this.classList.add("invalid");
     setTimeout(() => {
@@ -168,19 +169,19 @@ function rotateShip() {
 }
 
 const randomizeBoard = () => {
-  const gameboardGrid = document.querySelector(".main-grid");
+  const boardContainer = document.querySelector(".board-container");
   const shipsContainer = document.querySelector(".ships-container");
   gameboards[0].initiateGameboard();
   gameboards[0].randomizeBoard();
-  prep.renderGameboard(gameboardGrid, gameboards[0], players[0].id, true);
+  prep.renderGameboard(boardContainer, gameboards[0], players[0], true);
   prep.renderShipsContainer(shipsContainer, false);
 };
 
 const resetBoard = () => {
-  const gameboardGrid = document.querySelector(".main-grid");
+  const boardContainer = document.querySelector(".board-container");
   const shipsContainer = document.querySelector(".ships-container");
   gameboards[0].initiateGameboard();
-  prep.renderGameboard(gameboardGrid, gameboards[0], players[0].id, true);
+  prep.renderGameboard(boardContainer, gameboards[0], players[0], true);
   prep.renderShipsContainer(shipsContainer, true);
 };
 
@@ -188,6 +189,36 @@ function handleBackHome() {
   players = [];
   gameboards = [];
   prep.renderHome(main);
+}
+
+function handleGameStart() {
+  const areBoardsReady = gameboards.every((gb) => gb.areAllShipsPlaced());
+  if (!areBoardsReady) {
+    alert("Please place all your ships on board.");
+    return;
+  }
+  // give player turns
+  Player.giveRandomTurn(players);
+  // generate baords
+  gp.renderGameplayScreen(main, players, gameboards);
+}
+
+function handlePlayerMove() {
+  const coord = [
+    parseInt(this.getAttribute("row")),
+    parseInt(this.getAttribute("col")),
+  ];
+
+  players[0].attack(gameboards[1], coord);
+  players[1].togglePlayerTurn();
+  gp.renderGameplayScreen(main, players, gameboards);
+  if (players[1].id === "ai") {
+    setTimeout(() => {
+      players[1].genAIAttack(gameboards[0]);
+      players[0].togglePlayerTurn();
+      gp.renderGameplayScreen(main, players, gameboards);
+    }, 500);
+  }
 }
 
 export {
@@ -199,4 +230,6 @@ export {
   randomizeBoard,
   resetBoard,
   handleBackHome,
+  handleGameStart,
+  handlePlayerMove,
 };

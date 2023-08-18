@@ -1,20 +1,20 @@
+import Gameboard from "./Gameboard";
+
 export default class Player {
-  isPlayerTurn = false;
-
-  isWinner = false;
-
   constructor(id) {
     this.id = id;
   }
 
-  isAttacked(grid, coord) {
-    const cell = grid[coord[0]][coord[1]];
+  isPlayerTurn = false;
 
-    return !cell.markStatus;
+  isWinner = false;
+
+  togglePlayerTurn() {
+    this.isPlayerTurn = !this.isPlayerTurn;
   }
 
   attack(gameboard, coord) {
-    if (!this.isPlayerTurn || this.isAttacked(gameboard.grid, coord)) {
+    if (!this.isPlayerTurn || gameboard.isAttacked(coord)) {
       return false;
     }
 
@@ -38,5 +38,15 @@ export default class Player {
 
     const randomCoord = Math.floor(Math.random() * unattackedPositions.length);
     gameboard.receiveAttack(unattackedPositions[randomCoord]);
+    this.isPlayerTurn = false;
+    return true;
+  }
+
+  static giveRandomTurn(players) {
+    // const val = Gameboard.generateRandomNum(2);
+    // players[0].isPlayerTurn = val === 0 ? true : false;
+    // players[1].isPlayerTurn = val === 1 ? true : false;
+    players[0].isPlayerTurn = true;
+    players[1].isPlayerTurn = false;
   }
 }

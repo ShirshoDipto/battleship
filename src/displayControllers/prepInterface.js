@@ -1,52 +1,30 @@
-import Ship from "../models/Ship";
 import * as gameloop from "../index";
 
-// const ship1 = new Ship("carrier", 4, "y", [12, 22, 32, 42]);
-// const ship2 = new Ship("battleship", 3, "x", [24, 25, 26]);
-// gameboard[12].ship = {
-//   isStartCoord: true,
-//   shipObj: ship1,
-// };
-// gameboard[22].ship = {
-//   isStartCoord: false,
-//   shipObj: ship1,
-// };
-// gameboard[32].ship = {
-//   isStartCoord: false,
-//   shipObj: ship1,
-// };
-// gameboard[42].ship = {
-//   isStartCoord: false,
-//   shipObj: ship1,
-// };
-// gameboard[24].ship = {
-//   isStartCoord: true,
-//   shipObj: ship2,
-// };
-// gameboard[25].ship = {
-//   isStartCoord: false,
-//   shipObj: ship2,
-// };
-// gameboard[26].ship = {
-//   isStartCoord: false,
-//   shipObj: ship2,
-// };
+// const renderCross = () => `
+//                           <div class="cross-container">
+//                             <div class="horizontal"></div>
+//                             <div class="vertical"></div>
+//                           </div>
+//                           `;
 
-const renderCross = () => `
-                          <div class="cross-container">
-                            <div class="horizontal"></div>
-                            <div class="vertical"></div>
-                          </div>
-                          `;
+const giveEventListeners = (cells, player) => {
+  const cellsArray = Array.from(cells);
+  const playersCells = cellsArray.filter((c) => {
+    return c.getAttribute("playerId") === player.id;
+  });
 
-const renderShip = (ship, isPreparing) => {
+  playersCells.forEach((pc) => {
+    pc.addEventListener("click", gameloop.handlePlayerMove);
+  });
+};
+
+const renderShip = (container, ship, isPreparing) => {
   const shipCells = [];
   const shipAxis = ship.axis === "x" ? "draggable-x" : "draggable-y";
   const dragged = ship.coords.length !== 0 ? "dragged" : "";
-  let shipStyle;
-  if (ship.axis === "x") {
-    shipStyle = `style="grid-template-columns: repeat(${ship.shipLength}, var(--cell-width));"`;
-  } else {
+  const cursortype = isPreparing ? "" : "no-cursor";
+  let shipStyle = `style="grid-template-columns: repeat(${ship.shipLength}, var(--cell-width));"`;
+  if (ship.axis === "y") {
     shipStyle = `style="grid-template-rows: repeat(${ship.shipLength}, var(--cell-width));"`;
   }
 
@@ -55,59 +33,78 @@ const renderShip = (ship, isPreparing) => {
     shipCells.push(cell);
   }
 
-  const shipContainer = `
-                          <div class="draggable ${dragged} ${shipAxis}" 
-                          ${shipStyle} name="${
-    ship.name
-  }" draggable="${isPreparing}">
+  container.innerHTML += `
+                          <div class="draggable ${dragged} ${shipAxis} ${cursortype}" ${shipStyle} 
+                            name="${ship.name}" draggable="${isPreparing}">
                             ${shipCells.join("")}
                           </div>
                         `;
-
-  return shipContainer;
 };
 
-// const renderCells = (container) => {
-
-// };
-
-const renderGameboard = (container, gameboard, playerId, isPreparing) => {
-  container.innerHTML = "";
-
-  const grid = gameboard.grid;
-
+const renderCells = (container, board, player, isPreparing) => {
+  const grid = board.grid;
   for (let row = 0; row < grid.length; row += 1) {
     for (let col = 0; col < grid[0].length; col += 1) {
-      let shipElem = "";
-      if (
-        gameboard.playerId === playerId &&
-        grid[row][col].ship?.isStartCoord
+      container.innerHTML += `<div class="cell" playerId="${player.id}" row="${row}" col="${col}"></div>`;
+      const cell = container.querySelector(`[row="${row}"][col="${col}"]`);
+      if (grid[row][col].ship?.isStartCoord && player.id === board.playerId) {
+        renderShip(cell, grid[row][col].ship.shipObj, isPreparing);
+      } else if (
+        player.id !== board.playerId &&
+        !grid[row][col].markStatus &&
+        player.isPlayerTurn
       ) {
-        shipElem = renderShip(grid[row][col].ship.shipObj, isPreparing);
+        cell.classList.add("hover-effect");
       }
-
-      const cell = `<div class="cell" playerId="${playerId}" row="${row}" col="${col}">
-                      ${shipElem}
-                   </div>`;
-
-      container.innerHTML += cell;
     }
   }
+};
 
-  if (isPreparing) {
-    const draggables = container.querySelectorAll(".draggable");
-    draggables.forEach((d) => {
-      d.addEventListener("click", gameloop.rotateShip);
-      d.addEventListener("dragstart", gameloop.getMeasurements);
-      d.addEventListener("drag", gameloop.displayDraggablePositions);
-      d.addEventListener("dragend", gameloop.placeShipOnBoard);
-    });
-  }
+const renderGameboard = (container, board, player, isPreping) => {
+  container.innerHTML = `
+                          <div class="coord-num"></div>
+                          <div class="coord-num">0</div>
+                          <div class="coord-num">1</div>
+                          <div class="coord-num">2</div>
+                          <div class="coord-num">3</div>
+                          <div class="coord-num">4</div>
+                          <div class="coord-num">5</div>
+                          <div class="coord-num">6</div>
+                          <div class="coord-num">7</div>
+                          <div class="coord-num">8</div>
+                          <div class="coord-num">9</div>
+                          <div class="coord-num">0</div>
+                          <div class="coord-num">1</div>
+                          <div class="coord-num">2</div>
+                          <div class="coord-num">3</div>
+                          <div class="coord-num">4</div>
+                          <div class="coord-num">5</div>
+                          <div class="coord-num">6</div>
+                          <div class="coord-num">7</div>
+                          <div class="coord-num">8</div>
+                          <div class="coord-num">9</div>
+
+                          <div class="main-grid"></div>`;
+
+  const mainGrid = container.querySelector(".main-grid");
+  renderCells(mainGrid, board, player, isPreping);
 
   const cells = container.querySelectorAll(".cell");
-  cells.forEach((cell) => {
-    cell.addEventListener("dragover", (e) => e.preventDefault());
-  });
+  if (!isPreping && player.isPlayerTurn) {
+    giveEventListeners(cells, player);
+  } else {
+    cells.forEach((cell) => {
+      cell.addEventListener("dragover", (e) => e.preventDefault());
+    });
+
+    const ships = container.querySelectorAll(".draggable");
+    ships.forEach((ship) => {
+      ship.addEventListener("click", gameloop.rotateShip);
+      ship.addEventListener("dragstart", gameloop.getMeasurements);
+      ship.addEventListener("drag", gameloop.displayDraggablePositions);
+      ship.addEventListener("dragend", gameloop.placeShipOnBoard);
+    });
+  }
 };
 
 const renderShipsContainer = (container, isShipShowing) => {
@@ -211,8 +208,7 @@ const renderShipsContainer = (container, isShipShowing) => {
   });
 };
 
-const renderPreparations = (container, gameboard, playerId, isPreparing) => {
-  container.innerHTML = "";
+const renderPreparations = (container, gameboard, player, isPreparing) => {
   container.innerHTML = `
                           <div class="main-wrapper">
                             <div class="main-top">Prepare your board</div>
@@ -221,30 +217,6 @@ const renderPreparations = (container, gameboard, playerId, isPreparing) => {
                                 <div class="ships-container">
                                 </div>
                                 <div class="board-container">
-                                    <div class="coord-num"></div>
-                                    <div class="coord-num">0</div>
-                                    <div class="coord-num">1</div>
-                                    <div class="coord-num">2</div>
-                                    <div class="coord-num">3</div>
-                                    <div class="coord-num">4</div>
-                                    <div class="coord-num">5</div>
-                                    <div class="coord-num">6</div>
-                                    <div class="coord-num">7</div>
-                                    <div class="coord-num">8</div>
-                                    <div class="coord-num">9</div>
-                                    <div class="coord-num">0</div>
-                                    <div class="coord-num">1</div>
-                                    <div class="coord-num">2</div>
-                                    <div class="coord-num">3</div>
-                                    <div class="coord-num">4</div>
-                                    <div class="coord-num">5</div>
-                                    <div class="coord-num">6</div>
-                                    <div class="coord-num">7</div>
-                                    <div class="coord-num">8</div>
-                                    <div class="coord-num">9</div>
-                                    <div class="main-grid">
-                                      
-                                    </div>
                                 </div>
                               </div>
                             </div>
@@ -256,14 +228,14 @@ const renderPreparations = (container, gameboard, playerId, isPreparing) => {
                                 </div>
                                 <div class="prep-buttons-container">
                                   <button class="prep-button" id="back-from-prep">Back</button>
-                                  <button class="prep-button id="start-from-prep"">Start</button>
+                                  <button class="prep-button" id="start-from-prep">Start</button>
                                 </div>              
                               </div>
                             </div>
                           </div>  
                           `;
 
-  const mainGrid = container.querySelector(".main-grid");
+  const boardContainer = container.querySelector(".board-container");
   const shipsContainer = container.querySelector(".ships-container");
   const baordRandomize = container.querySelector("#board-randomize");
   const boardReset = container.querySelector("#board-reset");
@@ -271,15 +243,15 @@ const renderPreparations = (container, gameboard, playerId, isPreparing) => {
   const startButton = container.querySelector("#start-from-prep");
 
   renderShipsContainer(shipsContainer, true);
-  renderGameboard(mainGrid, gameboard, playerId, isPreparing);
+  renderGameboard(boardContainer, gameboard, player, isPreparing);
   baordRandomize.addEventListener("click", gameloop.randomizeBoard);
   boardReset.addEventListener("click", gameloop.resetBoard);
   backButton.addEventListener("click", gameloop.handleBackHome);
+  startButton.addEventListener("click", gameloop.handleGameStart);
 };
 
 function renderHome(container) {
-  container.innerHTML = "";
-  container.innerHTML += `
+  container.innerHTML = `
                         <div class="main-wrapper">
                           <div class="main-top"></div>
                             <div class="main-middle">

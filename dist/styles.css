@@ -45,11 +45,19 @@
   width: 100%;
 }
 
-.preparation-wrapper {
+.preparation-wrapper,
+.boards-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.preparation-wrapper {
   gap: 30px;
+}
+
+.boards-wrapper {
+  gap: 100px;
 }
 
 .ships-container {
@@ -85,7 +93,9 @@
   gap: 10px;
 }
 
-.board-container {
+.board-container,
+.opponent-board-container,
+.player-board-container {
   display: grid;
   grid-template-columns: repeat(11, var(--cell-width));
   grid-template-rows: repeat(11, var(--cell-width));
@@ -150,7 +160,7 @@
 }
 
 .hovered {
-    background-color: greenyellow;
+    background-color: yellowgreen;
 }
 
 .invalid {
@@ -203,6 +213,22 @@
 /* No display */
 .hide {
   display: none;
+}
+
+/* No cursor */
+.no-cursor {
+  cursor: initial;
+}
+
+/* Hover effect */
+.hover-effect:hover {
+  background-color: rgb(201, 250, 201);
+  cursor: pointer;
+}
+
+/* Opaque Effect */
+.opaqued {
+  opacity: 0.5;
 }
 
 /* Grabbing */

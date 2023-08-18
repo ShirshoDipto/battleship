@@ -2,6 +2,10 @@ import Ship from "./Ship";
 import Cell from "./Cell";
 
 export default class Gameboard {
+  constructor(playerId) {
+    this.playerId = playerId;
+  }
+
   SIZE = 10;
 
   grid = [];
@@ -20,10 +24,6 @@ export default class Gameboard {
     destroyer3: new Ship("destroyer3", 1, "x"),
     destroyer4: new Ship("destroyer4", 1, "x"),
   };
-
-  constructor(playerId) {
-    this.playerId = playerId;
-  }
 
   initiateGameboard() {
     this.grid = [];
@@ -102,12 +102,12 @@ export default class Gameboard {
     return adjacents;
   }
 
-  AreCoordsInGrid(coords) {
+  areCoordsInGrid(coords) {
     return coords.every((c) => this.grid[c[0]] && this.grid[c[0]][c[1]]);
   }
 
   isValidLocation(shipName, shipAxis, coords) {
-    if (!this.AreCoordsInGrid(coords)) return false;
+    if (!this.areCoordsInGrid(coords)) return false;
 
     let coordsToCheck;
     if (shipAxis === "x") {
@@ -127,17 +127,17 @@ export default class Gameboard {
     return !isInvalid; // If none of them are invalid, the location is valid
   }
 
-  generateRandomCoord() {
-    return Math.floor(Math.random() * this.SIZE);
-  }
-
-  generateRandomAxis() {
-    const num = Math.floor(Math.random() * 2);
-    return num === 0 ? "x" : "y";
+  static generateRandomNum(range) {
+    return Math.floor(Math.random() * range);
   }
 
   generateRandomCoords(ship) {
-    const coords = [[this.generateRandomCoord(), this.generateRandomCoord()]];
+    const coords = [
+      [
+        Gameboard.generateRandomNum(this.SIZE),
+        Gameboard.generateRandomNum(this.SIZE),
+      ],
+    ];
 
     for (let i = 1; i < ship.shipLength; i += 1) {
       if (ship.axis === "x") {
@@ -152,7 +152,8 @@ export default class Gameboard {
 
   shuffleShipsAxis() {
     Object.values(this.allShips).forEach((s) => {
-      s.axis = this.generateRandomAxis();
+      const randomNum = Gameboard.generateRandomNum(2);
+      s.axis = randomNum === 0 ? "x" : "y";
     });
   }
 
@@ -170,6 +171,12 @@ export default class Gameboard {
     });
   }
 
+  isAttacked(coord) {
+    const cell = this.grid[coord[0]][coord[1]];
+
+    return cell.markStatus;
+  }
+
   receiveAttack(coord) {
     if (this.lastAttack.length !== 0) {
       const cell = this.grid[this.lastAttack[0]][this.lastAttack[1]];
@@ -182,6 +189,10 @@ export default class Gameboard {
   }
 
   isGameOver() {
-    return this.allShips.every((ship) => ship.isSunk());
+    return Object.values(this.allShips).every((ship) => ship.isSunk());
+  }
+
+  areAllShipsPlaced() {
+    return Object.values(this.allShips).every((ship) => ship.coords.length > 0);
   }
 }

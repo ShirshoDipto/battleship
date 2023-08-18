@@ -1,5 +1,6 @@
 import Ship from "../models/Ship";
 import Gameboard from "../models/Gameboard";
+import Player from "../models/Player";
 
 let testGameboard;
 
