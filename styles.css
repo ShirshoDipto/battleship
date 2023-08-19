@@ -231,4 +231,16 @@
   opacity: 0.5;
 }
 
-/* Grabbing */
+/* missed */
+.hit {
+  background-color: rgb(206, 206, 206);
+}
+
+/* Last attack */
+.last {
+  background-color: rgb(228, 255, 174);
+}
+
+.sunk {
+  border: 1.5px solid red;
+}
