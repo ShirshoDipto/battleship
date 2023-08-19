@@ -15,7 +15,7 @@ export default class Player {
 
   attack(gameboard, coord) {
     if (!this.isPlayerTurn || gameboard.isAttacked(coord)) {
-      return false;
+      throw new Error("this position is already been hit.");
     }
 
     const didHitShip = gameboard.receiveAttack(coord);

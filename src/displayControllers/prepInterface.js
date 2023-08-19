@@ -3,13 +3,12 @@ import * as gameloop from "../index";
 const renderCross = (container) => {
   container.innerHTML = `
                         <div class="cross-container">
-                          <div class="horizontal">h</div>
-                          <div class="vertical">v</div>
+                          <i class="uil uil-multiply"></i>
                         </div>
                         `;
 };
 
-const giveEventListeners = (cells, player) => {
+const toggleEventListeners = (cells, player) => {
   const cellsArray = Array.from(cells);
   const playersCells = cellsArray.filter((c) => {
     return c.getAttribute("playerId") === player.id;
@@ -25,9 +24,11 @@ const renderShip = (container, ship, isPreparing) => {
   const shipAxis = ship.axis === "x" ? "draggable-x" : "draggable-y";
   const dragged = ship.coords.length !== 0 ? "dragged" : "";
   const cursortype = isPreparing ? "" : "no-cursor";
-  let shipStyle = `style="grid-template-columns: repeat(${ship.shipLength}, var(--cell-width));"`;
+  const sunkStyle = ship.isSunk() ? "sunk" : "";
+  const offset = 3 / ship.shipLength;
+  let shipStyle = `style="grid-template-columns: repeat(${ship.shipLength}, calc(var(--cell-width) - ${offset}px));"`;
   if (ship.axis === "y") {
-    shipStyle = `style="grid-template-rows: repeat(${ship.shipLength}, var(--cell-width));"`;
+    shipStyle = `style="grid-template-rows: repeat(${ship.shipLength}, calc(var(--cell-width) - ${offset}px));"`;
   }
 
   for (let i = 0; i < ship.shipLength; i += 1) {
@@ -36,19 +37,16 @@ const renderShip = (container, ship, isPreparing) => {
   }
 
   container.innerHTML += `
-                          <div class="draggable ${dragged} ${shipAxis} ${cursortype}" ${shipStyle} 
-                            name="${ship.name}" draggable="${isPreparing}">
-                            ${shipCells.join("")}
-                          </div>
+                    <div class="draggable ${dragged} ${shipAxis} ${cursortype} ${sunkStyle}" 
+                    ${shipStyle} name="${ship.name}" draggable="${isPreparing}">
+                      ${shipCells.join("")}
+                    </div>
                         `;
 };
 
 const getMarkStatus = (cellDiv, cellData) => {
   if (cellData.ship && cellData.markStatus) {
     renderCross(cellDiv);
-    if (cellData.ship.shipObj.isSunk()) {
-      cellDiv.classList.add("sunk");
-    }
   }
 
   if (cellData.markStatus === "hit" && !cellData.ship) {
@@ -69,6 +67,11 @@ const renderCells = (container, board, player, isPreparing) => {
       if (cellData.ship?.isStartCoord && player.id === board.playerId) {
         renderShip(elem, cellData.ship.shipObj, isPreparing);
       } else if (
+        cellData.ship?.isStartCoord &&
+        cellData.ship.shipObj.isSunk()
+      ) {
+        renderShip(elem, cellData.ship.shipObj, isPreparing);
+      } else if (
         player.id !== board.playerId &&
         !cellData.markStatus &&
         player.isPlayerTurn
@@ -80,6 +83,11 @@ const renderCells = (container, board, player, isPreparing) => {
 };
 
 const renderGameboard = (container, board, player, isPreping) => {
+  let cells = container.querySelectorAll(".cell");
+  cells.forEach((cell) => {
+    cell.removeEventListener("click", gameloop.handlePlayerMove);
+  });
+
   container.innerHTML = `
                           <div class="coord-num"></div>
                           <div class="coord-num">0</div>
@@ -108,9 +116,9 @@ const renderGameboard = (container, board, player, isPreping) => {
   const mainGrid = container.querySelector(".main-grid");
   renderCells(mainGrid, board, player, isPreping);
 
-  const cells = container.querySelectorAll(".cell");
-  if (!isPreping && player.isPlayerTurn) {
-    giveEventListeners(cells, player);
+  cells = container.querySelectorAll(".cell");
+  if (!isPreping && player.id === "you" && player.isPlayerTurn) {
+    toggleEventListeners(cells, player);
   } else {
     cells.forEach((cell) => {
       cell.addEventListener("dragover", (e) => e.preventDefault());

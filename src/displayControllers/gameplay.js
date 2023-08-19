@@ -35,7 +35,7 @@ function renderGameplayScreen(container, players, gameboards) {
   prep.renderGameboard(opponentBoard, gameboards[1], players[0], false); //Make sure to give proper player Id
 }
 
-function handleGameOverDisplay(container, gameboards, players) {
+function handleGameOverDisplay(container, players, gameboards) {
   const cells = container.querySelectorAll(".cell");
   cells.forEach((cell) => {
     cell.removeEventListener("click", gameloop.handlePlayerMove);
@@ -46,11 +46,13 @@ function handleGameOverDisplay(container, gameboards, players) {
     b.classList.remove("opaqued");
   });
 
-  if (players[0].isWinner) {
-    alert("You have won!!");
-  } else {
-    alert("Opponent has won!!");
-  }
+  setTimeout(() => {
+    if (players[0].isWinner) {
+      alert("You have won!!");
+    } else {
+      alert("Opponent has won!!");
+    }
+  }, 200);
 }
 
 export { renderGameplayScreen, handleGameOverDisplay };

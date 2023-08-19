@@ -2,11 +2,21 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
 }
 
 :root {
   --cell-width: 30px;
   --cell-border-color: rgb(201, 201, 201);
+  /* --cell-border-color: grey; */
+  --ship-border-color: blue;
+  --dragging-border-color: rgb(132, 132, 210);
+  --dragging-background-color: rgb(253, 253, 253);
+  --hover-effect-color: rgb(201, 250, 201);
+  --not-allowed: red;
+  --hit-color: rgb(235, 235, 235);
+  --last-color: rgb(215, 240, 164);
+  ;
 }
 
 #content {
@@ -67,7 +77,7 @@
 
 .ship-container {
   height: calc(1.5px + var(--cell-width));
-  border: 1px dashed blue;
+  border: 1px dashed var(--ship-border-color);
 }
 
 .len4-container {
@@ -103,6 +113,7 @@
 }
 
 .coord-num {
+  font-weight: 300;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -141,14 +152,12 @@
 
 .draggable-x {
   height: var(--cell-width);
-  /* top: 0; */
-  left: -1.5px;
+  left: 0;
 }
 
 .draggable-y {
   width: var(--cell-width);
-  top: -1.5px;
-  /* left: 0; */
+  top: 0;
 }
 
 .dragged {
@@ -157,17 +166,18 @@
   cursor: pointer;
 }
 
+/* invalid */
+.invalid {
+  border: 2px solid var(--not-allowed);
+}
+
 .dragging {
-    background-color: rgb(253, 253, 253);
-    border: thin solid rgb(132, 132, 210);
+  background-color: var(--dragging-background-color);
+  border: thin solid var(--dragging-border-color);
 }
 
 .hovered {
-    background-color: yellowgreen;
-}
-
-.invalid {
-  border: thin solid red;
+  background-color: yellowgreen;
 }
 
 .opitons-wrapper {
@@ -225,7 +235,7 @@
 
 /* Hover effect */
 .hover-effect:hover {
-  background-color: rgb(201, 250, 201);
+  background-color: var(--hover-effect-color);
   cursor: pointer;
 }
 
@@ -234,16 +244,23 @@
   opacity: 0.5;
 }
 
-/* missed */
+/* hit */
 .hit {
-  background-color: rgb(206, 206, 206);
+  background-color: var(--hit-color);
 }
 
 /* Last attack */
 .last {
-  background-color: rgb(228, 255, 174);
+  background-color: var(--last-color)
 }
 
+/* sunk */
 .sunk {
-  border: 1.5px solid red;
+  border: 2px solid var(--not-allowed);
+  background: none;
+}
+
+.uil-multiply {
+  color: red;
+  font-size: 1.5rem;
 }

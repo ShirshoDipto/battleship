@@ -11,8 +11,8 @@ function handleGameOption(e) {
   if (this.textContent === "vs Friend") {
     // Multiplayer handling code
   } else {
-    players.push(new Player("host"), new Player("ai"));
-    gameboards.push(new Gameboard("host"), new Gameboard("ai"));
+    players.push(new Player("you"), new Player("ai"));
+    gameboards.push(new Gameboard("you"), new Gameboard("ai"));
     gameboards[0].initiateGameboard();
     gameboards[1].initiateGameboard();
     gameboards[1].randomizeBoard();
@@ -201,7 +201,7 @@ function checkGameOver(board, player) {
 }
 
 function handleAIAttackHelper() {
-  const val = new Promise((resolve, reject) => {
+  const val = new Promise((resolve) => {
     setTimeout(() => {
       const isHit = players[1].genAIAttack(gameboards[0]);
       gp.renderGameplayScreen(main, players, gameboards);
@@ -224,20 +224,25 @@ async function handleAIAttack() {
 }
 
 async function handlePlayerMove() {
-  const coord = [
-    parseInt(this.getAttribute("row")),
-    parseInt(this.getAttribute("col")),
-  ];
+  try {
+    const coord = [
+      parseInt(this.getAttribute("row")),
+      parseInt(this.getAttribute("col")),
+    ];
 
-  const didHitShip = players[0].attack(gameboards[1], coord);
-  gp.renderGameplayScreen(main, players, gameboards);
-  checkGameOver(gameboards[1], players[0]);
+    const didHitShip = players[0].attack(gameboards[1], coord);
+    gp.renderGameplayScreen(main, players, gameboards);
+    checkGameOver(gameboards[1], players[0]);
 
-  if (didHitShip) return;
+    if (didHitShip) return;
 
-  players[1].togglePlayerTurn();
-  if (players[1].id === "ai") {
-    await handleAIAttack();
+    players[1].togglePlayerTurn();
+    gp.renderGameplayScreen(main, players, gameboards);
+    if (players[1].id === "ai") {
+      await handleAIAttack();
+    }
+  } catch (error) {
+    return console.log(error);
   }
 }
 
