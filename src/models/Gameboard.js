@@ -186,6 +186,13 @@ export default class Gameboard {
     this.lastAttack = coord;
     const cellToAttack = this.grid[coord[0]][coord[1]];
     cellToAttack.markStatus = "last";
+    const ship = cellToAttack.ship.shipObj;
+    if (ship) {
+      ship.hit();
+      return true;
+    }
+
+    return false;
   }
 
   isGameOver() {

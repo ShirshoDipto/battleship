@@ -1,4 +1,10 @@
 export default class Ship {
+  constructor(name, shipLength, axis) {
+    this.name = name;
+    this.shipLength = shipLength;
+    this.axis = axis;
+  }
+
   numHits = 0;
 
   coords = [];
@@ -10,12 +16,6 @@ export default class Ship {
   initialX = 0;
 
   initialY = 0;
-
-  constructor(name, shipLength, axis) {
-    this.name = name;
-    this.shipLength = shipLength;
-    this.axis = axis;
-  }
 
   hit() {
     this.numHits += 1;
@@ -38,6 +38,16 @@ export default class Ship {
     });
 
     return newCoords;
+  }
+
+  isSameDraggingPos(e) {
+    const oldX = this.initialX;
+    const oldY = this.initialY;
+    const newX = e.clientX;
+    const newY = e.clientY;
+    this.initialX = newX;
+    this.initialY = newY;
+    return oldX === newX && oldY === newY;
   }
 
   resetShipToOriginal() {

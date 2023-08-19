@@ -18,9 +18,9 @@ export default class Player {
       return false;
     }
 
-    gameboard.receiveAttack(coord);
-    this.isPlayerTurn = false;
-    return true;
+    const didHitShip = gameboard.receiveAttack(coord);
+    this.isPlayerTurn = didHitShip ? true : false;
+    return didHitShip;
   }
 
   // Dummy version
@@ -37,9 +37,11 @@ export default class Player {
     }
 
     const randomCoord = Math.floor(Math.random() * unattackedPositions.length);
-    gameboard.receiveAttack(unattackedPositions[randomCoord]);
-    this.isPlayerTurn = false;
-    return true;
+    const didHitShip = gameboard.receiveAttack(
+      unattackedPositions[randomCoord]
+    );
+    this.isPlayerTurn = didHitShip ? true : false;
+    return didHitShip;
   }
 
   static giveRandomTurn(players) {

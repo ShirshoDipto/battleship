@@ -1,11 +1,13 @@
 import * as gameloop from "../index";
 
-// const renderCross = () => `
-//                           <div class="cross-container">
-//                             <div class="horizontal"></div>
-//                             <div class="vertical"></div>
-//                           </div>
-//                           `;
+const renderCross = (container) => {
+  container.innerHTML = `
+                        <div class="cross-container">
+                          <div class="horizontal">h</div>
+                          <div class="vertical">v</div>
+                        </div>
+                        `;
+};
 
 const giveEventListeners = (cells, player) => {
   const cellsArray = Array.from(cells);
@@ -41,20 +43,37 @@ const renderShip = (container, ship, isPreparing) => {
                         `;
 };
 
+const getMarkStatus = (cellDiv, cellData) => {
+  if (cellData.ship && cellData.markStatus) {
+    renderCross(cellDiv);
+    if (cellData.ship.shipObj.isSunk()) {
+      cellDiv.classList.add("sunk");
+    }
+  }
+
+  if (cellData.markStatus === "hit" && !cellData.ship) {
+    cellDiv.classList.add("hit");
+  } else if (cellData.markStatus === "last") {
+    cellDiv.classList.add("last");
+  }
+};
+
 const renderCells = (container, board, player, isPreparing) => {
   const grid = board.grid;
   for (let row = 0; row < grid.length; row += 1) {
     for (let col = 0; col < grid[0].length; col += 1) {
       container.innerHTML += `<div class="cell" playerId="${player.id}" row="${row}" col="${col}"></div>`;
-      const cell = container.querySelector(`[row="${row}"][col="${col}"]`);
-      if (grid[row][col].ship?.isStartCoord && player.id === board.playerId) {
-        renderShip(cell, grid[row][col].ship.shipObj, isPreparing);
+      const elem = container.querySelector(`[row="${row}"][col="${col}"].cell`);
+      const cellData = grid[row][col];
+      getMarkStatus(elem, cellData);
+      if (cellData.ship?.isStartCoord && player.id === board.playerId) {
+        renderShip(elem, cellData.ship.shipObj, isPreparing);
       } else if (
         player.id !== board.playerId &&
-        !grid[row][col].markStatus &&
+        !cellData.markStatus &&
         player.isPlayerTurn
       ) {
-        cell.classList.add("hover-effect");
+        elem.classList.add("hover-effect");
       }
     }
   }

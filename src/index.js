@@ -65,21 +65,11 @@ const getMeasurements = (e) => {
   });
 };
 
-const isSamePosition = (e, ship) => {
-  const oldX = ship.initialX;
-  const oldY = ship.initialY;
-  const newX = e.clientX;
-  const newY = e.clientY;
-  ship.initialX = newX;
-  ship.initialY = newY;
-  return oldX === newX && oldY === newY;
-};
-
 const displayDraggablePositions = (e) => {
   let hoveredCells = [];
   const theShip = gameboards[0].allShips[e.target.getAttribute("name")];
 
-  if (isSamePosition(e, theShip)) return;
+  if (theShip.isSameDraggingPos(e)) return;
   const cells = document.querySelectorAll(".cell");
   e.target.classList.add("hide");
 
@@ -192,32 +182,50 @@ function handleBackHome() {
 }
 
 function handleGameStart() {
-  const areBoardsReady = gameboards.every((gb) => gb.areAllShipsPlaced());
-  if (!areBoardsReady) {
-    alert("Please place all your ships on board.");
-    return;
+  if (!gameboards.every((gb) => gb.areAllShipsPlaced())) {
+    return alert("Please place all your ships on board.");
   }
-  // give player turns
+  console.log(gameboards[1].allShips);
+
   Player.giveRandomTurn(players);
-  // generate baords
   gp.renderGameplayScreen(main, players, gameboards);
 }
 
-function handlePlayerMove() {
+function handleAIAttackHelper() {
+  const val = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const isHit = players[1].genAIAttack(gameboards[0]);
+      gp.renderGameplayScreen(main, players, gameboards);
+      resolve(isHit);
+    }, 500);
+  });
+
+  return val;
+}
+
+async function handleAIAttack() {
+  let didHitShip = await handleAIAttackHelper();
+  while (didHitShip) {
+    didHitShip = await handleAIAttackHelper();
+  }
+  players[0].togglePlayerTurn();
+  gp.renderGameplayScreen(main, players, gameboards);
+}
+
+async function handlePlayerMove(e) {
   const coord = [
     parseInt(this.getAttribute("row")),
     parseInt(this.getAttribute("col")),
   ];
 
-  players[0].attack(gameboards[1], coord);
-  players[1].togglePlayerTurn();
+  const didHitShip = players[0].attack(gameboards[1], coord);
   gp.renderGameplayScreen(main, players, gameboards);
+
+  if (didHitShip) return;
+
+  players[1].togglePlayerTurn();
   if (players[1].id === "ai") {
-    setTimeout(() => {
-      players[1].genAIAttack(gameboards[0]);
-      players[0].togglePlayerTurn();
-      gp.renderGameplayScreen(main, players, gameboards);
-    }, 500);
+    handleAIAttack();
   }
 }
 
