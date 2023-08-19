@@ -153,7 +153,7 @@ export default class Gameboard {
   shuffleShipsAxis() {
     Object.values(this.allShips).forEach((s) => {
       const randomNum = Gameboard.generateRandomNum(2);
-      s.axis = randomNum === 0 ? "x" : "y";
+      s.axis = randomNum === 0 || s.shipLength === 1 ? "x" : "y";
     });
   }
 

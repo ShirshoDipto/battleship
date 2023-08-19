@@ -6,6 +6,7 @@
 
 :root {
   --cell-width: 30px;
+  --cell-border-color: rgb(201, 201, 201);
 }
 
 #content {
@@ -113,11 +114,13 @@
   display: grid;
   grid-template-columns: repeat(10, var(--cell-width));
   grid-template-rows: repeat(10, var(--cell-width));
-  border: 1px solid grey;
+  border-left: thin solid var(--cell-border-color);
+  border-bottom: thin solid var(--cell-border-color);
 }
 
 .cell {
-  border: 0.5px solid rgb(201, 201, 201);
+  border-top: thin solid var(--cell-border-color);
+  border-right: thin solid var(--cell-border-color);
   display: flex;
   position: relative;
   justify-content: center;
@@ -130,7 +133,7 @@
 
 .draggable {
   display: grid;
-  border: thin solid blue;
+  border: 2px solid blue;
   background-color: lightblue;
   opacity: 0.6;
   cursor: move;
@@ -138,14 +141,14 @@
 
 .draggable-x {
   height: var(--cell-width);
-  top: -0.5px;
+  /* top: 0; */
   left: -1.5px;
 }
 
 .draggable-y {
   width: var(--cell-width);
   top: -1.5px;
-  left: -0.5px;
+  /* left: 0; */
 }
 
 .dragged {
