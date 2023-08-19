@@ -141,7 +141,7 @@ const placeShipOnBoard = (e) => {
 
 function rotateShip() {
   const shipToRotate = gameboards[0].allShips[this.getAttribute("name")];
-  if (shipToRotate.coords.length === 0) return;
+  if (shipToRotate.coords.length === 0 || shipToRotate.shipLength === 1) return;
 
   const newCoords = shipToRotate.getCoordsForRotation();
   const newAxis = shipToRotate.axis === "x" ? "y" : "x";
@@ -185,10 +185,19 @@ function handleGameStart() {
   if (!gameboards.every((gb) => gb.areAllShipsPlaced())) {
     return alert("Please place all your ships on board.");
   }
-  console.log(gameboards[1].allShips);
+  Object.values(gameboards[1].allShips).forEach((s) => {
+    console.log(s.coords);
+  });
 
   Player.giveRandomTurn(players);
   gp.renderGameplayScreen(main, players, gameboards);
+}
+
+function checkGameOver(board, player) {
+  if (board.isGameOver()) {
+    player.isWinner = true;
+    gp.handleGameOverDisplay(main, players, gameboards);
+  }
 }
 
 function handleAIAttackHelper() {
@@ -210,9 +219,11 @@ async function handleAIAttack() {
   }
   players[0].togglePlayerTurn();
   gp.renderGameplayScreen(main, players, gameboards);
+
+  checkGameOver(gameboards[0], players[1]);
 }
 
-async function handlePlayerMove(e) {
+async function handlePlayerMove() {
   const coord = [
     parseInt(this.getAttribute("row")),
     parseInt(this.getAttribute("col")),
@@ -220,12 +231,13 @@ async function handlePlayerMove(e) {
 
   const didHitShip = players[0].attack(gameboards[1], coord);
   gp.renderGameplayScreen(main, players, gameboards);
+  checkGameOver(gameboards[1], players[0]);
 
   if (didHitShip) return;
 
   players[1].togglePlayerTurn();
   if (players[1].id === "ai") {
-    handleAIAttack();
+    await handleAIAttack();
   }
 }
 

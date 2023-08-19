@@ -1,6 +1,4 @@
-import Ship from "../models/Ship";
 import Gameboard from "../models/Gameboard";
-import Player from "../models/Player";
 
 let testGameboard;
 
@@ -103,4 +101,24 @@ describe("Testing randomize function", () => {
       }
     });
   }
+});
+
+describe("Testing isGameOver() function", () => {
+  test("Shows game over when all ships have sunk", () => {
+    testGameboard.randomizeBoard();
+    const coordsOfShips = [];
+    testGameboard.grid.forEach((row, i) => {
+      row.forEach((col, j) => {
+        if (col.ship) {
+          coordsOfShips.push([i, j]);
+        }
+      });
+    });
+
+    coordsOfShips.forEach((c) => {
+      testGameboard.receiveAttack(c);
+    });
+
+    expect(testGameboard.isGameOver()).toBeTruthy();
+  });
 });

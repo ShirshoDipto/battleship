@@ -1,4 +1,5 @@
 import * as prep from "./prepInterface";
+import * as gameloop from "../index";
 
 function renderGameplayScreen(container, players, gameboards) {
   container.innerHTML = `
@@ -34,4 +35,22 @@ function renderGameplayScreen(container, players, gameboards) {
   prep.renderGameboard(opponentBoard, gameboards[1], players[0], false); //Make sure to give proper player Id
 }
 
-export { renderGameplayScreen };
+function handleGameOverDisplay(container, gameboards, players) {
+  const cells = container.querySelectorAll(".cell");
+  cells.forEach((cell) => {
+    cell.removeEventListener("click", gameloop.handlePlayerMove);
+    cell.classList.remove("hover-effect");
+  });
+  const boards = container.querySelectorAll(".boards-wrapper > div");
+  boards.forEach((b) => {
+    b.classList.remove("opaqued");
+  });
+
+  if (players[0].isWinner) {
+    alert("You have won!!");
+  } else {
+    alert("Opponent has won!!");
+  }
+}
+
+export { renderGameplayScreen, handleGameOverDisplay };
