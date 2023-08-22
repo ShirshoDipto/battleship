@@ -12,6 +12,10 @@ export default class Gameboard {
 
   lastAttack = [];
 
+  hoveredCoords = [];
+
+  isPreping = true;
+
   allShips = {
     carrier: new Ship("carrier", 4, "x"),
     battleship1: new Ship("battleship1", 3, "x"),
@@ -55,6 +59,12 @@ export default class Gameboard {
     theShip.coords = coords;
   }
 
+  placeShipsFromCoords(ships) {
+    Object.values(ships).forEach((s) => {
+      this.placeShip(s.name, s.axis, s.coords);
+    });
+  }
+
   repositionShip(name, newAxis, newCoords) {
     const theShip = this.allShips[name];
     theShip.coords.forEach((c) => {
@@ -66,7 +76,7 @@ export default class Gameboard {
   }
 
   // Can't take the function inside the Ship class cause the coords parameter is not of Ship object.
-  getAdjacentsForAxisX(coords) {
+  static getAdjacentsForAxisX(coords) {
     const adjacents = [];
 
     const head = [coords[0][0], coords[0][1] - 1];
@@ -84,7 +94,7 @@ export default class Gameboard {
     return adjacents;
   }
 
-  getAdjacentsForAxisY(coords) {
+  static getAdjacentsForAxisY(coords) {
     const adjacents = [];
 
     const head = [coords[0][0] - 1, coords[0][1]];
@@ -111,9 +121,9 @@ export default class Gameboard {
 
     let coordsToCheck;
     if (shipAxis === "x") {
-      coordsToCheck = [...this.getAdjacentsForAxisX(coords), ...coords];
+      coordsToCheck = [...Gameboard.getAdjacentsForAxisX(coords), ...coords];
     } else {
-      coordsToCheck = [...this.getAdjacentsForAxisY(coords), ...coords];
+      coordsToCheck = [...Gameboard.getAdjacentsForAxisY(coords), ...coords];
     }
 
     // Check if at least one of the value in the adjacents array is invalid

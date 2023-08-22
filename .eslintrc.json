@@ -12,6 +12,9 @@
   "plugins": ["jest"],
   "rules": {
     "no-unused-vars": "warn",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "no-alert": "off",
+    "radix": "off",
+    "no-await-in-loop": "off"
   }
 }

@@ -11,7 +11,7 @@ export default class Ship {
 
   isDraggable = true;
 
-  distanceFromMidToMouse = [];
+  distFromMidToMouse = [];
 
   initialX = 0;
 
@@ -53,9 +53,17 @@ export default class Ship {
   resetShipToOriginal() {
     this.coords = [];
     this.axis = "x";
-    this.distanceFromMidToMouse = [];
+    this.distFromMidToMouse = [];
     this.isDraggable = true;
     this.initialX = 0;
     this.initialY = 0;
+  }
+
+  storeDists(x, y, coord) {
+    this.distFromMidToMouse.push([x - coord[0], y - coord[1]]);
+  }
+
+  getOffset() {
+    return 3 / this.shipLength;
   }
 }

@@ -1,11 +1,11 @@
 import Gameboard from "./Gameboard";
 
 export default class Player {
-  constructor(id) {
+  constructor(id, isPlayerTurn = false, roomId = "") {
     this.id = id;
+    this.isPlayerTurn = isPlayerTurn;
+    this.roomId = roomId;
   }
-
-  isPlayerTurn = false;
 
   isWinner = false;
 
@@ -19,7 +19,7 @@ export default class Player {
     }
 
     const didHitShip = gameboard.receiveAttack(coord);
-    this.isPlayerTurn = didHitShip ? true : false;
+    this.isPlayerTurn = !!didHitShip;
     return didHitShip;
   }
 
@@ -40,15 +40,13 @@ export default class Player {
     const didHitShip = gameboard.receiveAttack(
       unattackedPositions[randomCoord]
     );
-    this.isPlayerTurn = didHitShip ? true : false;
+    this.isPlayerTurn = didHitShip;
     return didHitShip;
   }
 
   static giveRandomTurn(players) {
-    // const val = Gameboard.generateRandomNum(2);
-    // players[0].isPlayerTurn = val === 0 ? true : false;
-    // players[1].isPlayerTurn = val === 1 ? true : false;
-    players[0].isPlayerTurn = true;
-    players[1].isPlayerTurn = false;
+    const val = Gameboard.generateRandomNum(2);
+    players[0].isPlayerTurn = val === 0;
+    players[1].isPlayerTurn = val === 1;
   }
 }
