@@ -380,7 +380,7 @@ export default function DisplayController() {
   };
 
   const displayDraggablePositions = (e) => {
-    e.target.classList.add("hide");
+    // e.target.classList.add("hide");
     const board = game.gameboards[0];
     const ship = board.allShips[e.target.getAttribute("name")];
     if (ship.isSameDraggingPos(e)) return;
