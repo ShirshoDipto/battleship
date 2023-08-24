@@ -34,7 +34,7 @@ export default class Gameboard {
     for (let i = 0; i < this.SIZE; i += 1) {
       const row = [];
       for (let j = 0; j < this.SIZE; j += 1) {
-        row.push(new Cell(this.playerId));
+        row.push(new Cell(this.playerId, i, j));
       }
       this.grid.push(row);
     }
@@ -203,6 +203,23 @@ export default class Gameboard {
     }
 
     return false;
+  }
+
+  // Dummy version
+  genAIAttackCoord() {
+    const unattackedPositions = [];
+
+    for (let row = 0; row < this.grid.length; row += 1) {
+      for (let col = 0; col < this.grid[0].length; col += 1) {
+        const cell = this.grid[row][col];
+        if (!cell.markStatus) {
+          unattackedPositions.push([row, col]);
+        }
+      }
+    }
+
+    const randomCoord = Math.floor(Math.random() * unattackedPositions.length);
+    return unattackedPositions[randomCoord];
   }
 
   isGameOver() {
