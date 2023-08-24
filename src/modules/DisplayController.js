@@ -178,6 +178,7 @@ export default function DisplayController() {
   const renderGameboard = (container, board, player) => {
     container.innerHTML = `
                         <div class="coord-num"></div>
+                        <div class="coord-num">0</div>
                         <div class="coord-num">1</div>
                         <div class="coord-num">2</div>
                         <div class="coord-num">3</div>
@@ -187,17 +188,16 @@ export default function DisplayController() {
                         <div class="coord-num">7</div>
                         <div class="coord-num">8</div>
                         <div class="coord-num">9</div>
-                        <div class="coord-num">10</div>
-                        <div class="coord-num">A</div>
-                        <div class="coord-num">B</div>
-                        <div class="coord-num">C</div>
-                        <div class="coord-num">D</div>
-                        <div class="coord-num">E</div>
-                        <div class="coord-num">F</div>
-                        <div class="coord-num">G</div>
-                        <div class="coord-num">H</div>
-                        <div class="coord-num">I</div>
-                        <div class="coord-num">J</div>
+                        <div class="coord-num">0</div>
+                        <div class="coord-num">1</div>
+                        <div class="coord-num">2</div>
+                        <div class="coord-num">3</div>
+                        <div class="coord-num">4</div>
+                        <div class="coord-num">5</div>
+                        <div class="coord-num">6</div>
+                        <div class="coord-num">7</div>
+                        <div class="coord-num">8</div>
+                        <div class="coord-num">9</div>
 
                         <div class="main-grid"></div>
                         `;

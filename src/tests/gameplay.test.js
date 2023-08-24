@@ -68,40 +68,27 @@ describe("Testing receiveAttack function", () => {
     expect(currentCell.markStatus).toBe("last");
     expect(previousCell.markStatus).toBe("hit");
   });
-});
 
-describe("Testing randomize function", () => {
-  test("Generates multiple randomize board to verify it's functionality", () => {
-    for (let x = 0; x < 10; x += 1) {
-      testGameboard.initiateGameboard();
-      testGameboard.randomizeBoard();
-      const { allShips } = testGameboard;
+  test("Attack on [1, 4] hits a ship", () => {
+    testGameboard.receiveAttack([1, 4]);
+    const cell = testGameboard.grid[1][4];
+    expect(cell.ship.shipObj.numHits).toBe(1);
+  });
 
-      const coordsForShips = [];
-      // eslint-disable-next-line no-loop-func
-      Object.values(allShips).forEach((ship) => {
-        ship.coords.forEach((c, i) => {
-          const cell = testGameboard.grid[c[0]][c[1]];
-          coordsForShips.push(JSON.stringify(c));
-          expect(cell.ship).toBeTruthy();
-          if (i === 0) {
-            expect(cell.ship.isStartCoord).toBeTruthy();
-          } else {
-            expect(cell.ship.isStartCoord).toBeFalsy();
-          }
-        });
-      });
+  test("Attack on [6, 7] followed by [6, 8] and [6, 9] sinks a ship", () => {
+    testGameboard.receiveAttack([6, 7]);
+    testGameboard.receiveAttack([6, 8]);
+    testGameboard.receiveAttack([6, 9]);
+    const cell = testGameboard.grid[6][9];
+    expect(cell.ship.shipObj.isSunk()).toBeTruthy();
+  });
 
-      for (let row = 0; row < testGameboard.grid.length; row += 1) {
-        for (let col = 0; col < testGameboard.grid[0].length; col += 1) {
-          const cell = testGameboard.grid[row][col];
-          if (cell.ship) {
-            const colToVerify = JSON.stringify([row, col]);
-            expect(coordsForShips.includes(colToVerify)).toBeTruthy();
-          }
-        }
-      }
-    }
+  test("Returns TRUE after hitting a ship", () => {
+    expect(testGameboard.receiveAttack([6, 7])).toBeTruthy();
+  });
+
+  test("Returns FALSE after hitting blank position in the board", () => {
+    expect(testGameboard.receiveAttack([6, 3])).toBeFalsy();
   });
 });
 
@@ -142,5 +129,17 @@ describe("Testing isGameOver() function", () => {
     });
 
     expect(testGameboard.isGameOver()).toBeFalsy();
+  });
+});
+
+describe("Testing genAIAttack() function", () => {
+  test("Generates random valid coordinates for attack on enemy board", () => {
+    for (let i = 0; i < 100; i += 1) {
+      const coord = testGameboard.genAIAttackCoord();
+      expect(coord[0]).toBeGreaterThanOrEqual(0);
+      expect(coord[0]).toBeLessThan(10);
+      expect(coord[1]).toBeGreaterThanOrEqual(0);
+      expect(coord[1]).toBeLessThan(10);
+    }
   });
 });

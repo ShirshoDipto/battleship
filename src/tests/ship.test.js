@@ -1,6 +1,6 @@
 import Ship from "../models/Ship";
 
-describe("Testing rotate ship functionality", () => {
+describe("Testing getCoordsForRotation() function", () => {
   const coords1 = [[1, 1]];
   const ship1 = new Ship("destroyer1", 1, "x");
   ship1.coords = coords1;
@@ -28,18 +28,22 @@ describe("Testing rotate ship functionality", () => {
   const ship4 = new Ship("battleship2", 3, "x");
   ship4.coords = coords4;
 
-  // const coords6 = [
-  //   [6, 7],
-  //   [6, 8],
-  //   [6, 9],
-  // ];
-  // const ship6 = new Ship("battleship2", 3, "x");
+  const coords6 = [
+    [6, 7],
+    [6, 8],
+    [6, 9],
+  ];
+  const ship6 = new Ship("battleship2", 3, "x");
+  ship6.coords = coords6;
 
-  // const coords7 = [
-  //   [1, 4],
-  //   [1, 5],
-  // ];
-  // const ship7 = new Ship("submarine2", 2, "y");
+  const coords7 = [
+    [2, 7],
+    [3, 7],
+    [4, 7],
+    [5, 7],
+  ];
+  const ship7 = new Ship("carrier", 2, "y");
+  ship7.coords = coords7;
 
   // beforeEach(() => {
   //   testGameboard.placeShip(ship1, coords1);
@@ -69,11 +73,28 @@ describe("Testing rotate ship functionality", () => {
     ]);
   });
 
-  test("Changes ship location at the bottom edge going outside of the board", () => {
+  test("Changes ship location at the bottom edge to a location outside the board", () => {
     expect(ship4.getCoordsForRotation()).toStrictEqual([
       [8, 6],
       [9, 6],
       [10, 6],
+    ]);
+  });
+
+  test("[[6,7], [6,8], [6,9]] changes to [[6,7], [7,7], [8,7]]", () => {
+    expect(ship6.getCoordsForRotation()).toStrictEqual([
+      [6, 7],
+      [7, 7],
+      [8, 7],
+    ]);
+  });
+
+  test("changes ship location at the right edge to a location outside the board", () => {
+    expect(ship7.getCoordsForRotation()).toStrictEqual([
+      [2, 7],
+      [2, 8],
+      [2, 9],
+      [2, 10],
     ]);
   });
 });

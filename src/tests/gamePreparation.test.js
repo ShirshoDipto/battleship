@@ -1,5 +1,4 @@
 import Gameboard from "../models/Gameboard";
-import Ship from "../models/Ship";
 
 let testGameboard;
 
@@ -17,7 +16,7 @@ describe("Testing placeShip function", () => {
       [0, 3],
     ];
     testGameboard.placeShip("carrier", "x", coords);
-    const newShip = testGameboard.allShips["carrier"];
+    const newShip = testGameboard.allShips.carrier;
 
     expect(testGameboard.grid[0][0].ship.shipObj).toStrictEqual(newShip);
     expect(testGameboard.grid[0][1].ship.shipObj).toStrictEqual(newShip);
@@ -34,7 +33,7 @@ describe("Testing placeShip function", () => {
       [6, 4],
     ];
     testGameboard.placeShip("battleship1", "y", coords);
-    const newShip = testGameboard.allShips["battleship1"];
+    const newShip = testGameboard.allShips.battleship1;
 
     expect(testGameboard.grid[4][4].ship.shipObj).toStrictEqual(newShip);
     expect(testGameboard.grid[5][4].ship.shipObj).toStrictEqual(newShip);
@@ -269,14 +268,6 @@ describe("Testing isValidLocation when the board is NOT empty", () => {
     [1, 5],
   ];
 
-  const ship1 = new Ship("destroyer1", 1, "x");
-  const ship2 = new Ship("submarine1", 2, "x");
-  const ship3 = new Ship("destroyer2", 1, "x");
-  const ship4 = new Ship("battleship1", 3, "y");
-  const ship5 = new Ship("carrier", 4, "y");
-  const ship6 = new Ship("battleship2", 3, "x");
-  const ship7 = new Ship("submarine2", 2, "x");
-
   beforeEach(() => {
     testGameboard.placeShip("destroyer1", "x", coords1);
     testGameboard.placeShip("submarine1", "x", coords2);
@@ -356,10 +347,39 @@ describe("Testing isValidLocation when the board is NOT empty", () => {
       testGameboard.isValidLocation("battleship3", "y", coords)
     ).toBeFalsy();
   });
-  test("Checking random functions", () => {
-    // console.log(testGameboard.generateShips());
-  });
-  test("Checking randomizeBoard", () => {
-    // testGameboard.randomizeBoard();
+});
+
+describe("Testing board randomizing function", () => {
+  test("Generates multiple randomize board (100)", () => {
+    for (let x = 0; x < 100; x += 1) {
+      testGameboard.initiateGameboard();
+      testGameboard.randomizeBoard();
+      const { allShips } = testGameboard;
+
+      const coordsForShips = [];
+      // eslint-disable-next-line no-loop-func
+      Object.values(allShips).forEach((ship) => {
+        ship.coords.forEach((c, i) => {
+          const cell = testGameboard.grid[c[0]][c[1]];
+          coordsForShips.push(JSON.stringify(c));
+          expect(cell.ship).toBeTruthy();
+          if (i === 0) {
+            expect(cell.ship.isStartCoord).toBeTruthy();
+          } else {
+            expect(cell.ship.isStartCoord).toBeFalsy();
+          }
+        });
+      });
+
+      for (let row = 0; row < testGameboard.grid.length; row += 1) {
+        for (let col = 0; col < testGameboard.grid[0].length; col += 1) {
+          const cell = testGameboard.grid[row][col];
+          if (cell.ship) {
+            const colToVerify = JSON.stringify([row, col]);
+            expect(coordsForShips.includes(colToVerify)).toBeTruthy();
+          }
+        }
+      }
+    }
   });
 });
