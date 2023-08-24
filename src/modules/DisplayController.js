@@ -565,9 +565,6 @@ export default function DisplayController() {
     game.gameboards[0].isPreping = false;
     if (this.id === "ai-game-button") {
       game.prepareGameVsAI();
-      // Object.values(game.gameboards[1].allShips).forEach((val) => {
-      //   val.coords.forEach((c) => console.log(c));
-      // });
       renderGameplayScreen(game.players, game.gameboards);
     } else if (this.id === "create-game-button") {
       socket.emit("createGame", {
@@ -658,6 +655,8 @@ export default function DisplayController() {
     game.startGameWithFnd(player, board);
     renderGameplayScreen(game.players, game.gameboards);
   });
+
+  /** -------- Homepage loading --------- */
 
   const loadHomepage = () => {
     socket.connect();

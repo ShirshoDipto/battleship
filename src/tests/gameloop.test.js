@@ -61,7 +61,8 @@ describe("Testing receiveAttack function", () => {
     expect(currentCell.markStatus).toBe("last");
 
     testGameboard.receiveAttack([2, 2]);
-    let previousCell = testGameboard.grid[3][3];
+    const previousCell = testGameboard.grid[3][3];
+    // eslint-disable-next-line prefer-destructuring
     currentCell = testGameboard.grid[2][2];
     expect(testGameboard.lastAttack).toStrictEqual([2, 2]);
     expect(currentCell.markStatus).toBe("last");
@@ -70,13 +71,14 @@ describe("Testing receiveAttack function", () => {
 });
 
 describe("Testing randomize function", () => {
-  for (let x = 0; x < 10; x += 1) {
-    test("Generates multiple randomize board to verify it's functionality", () => {
+  test("Generates multiple randomize board to verify it's functionality", () => {
+    for (let x = 0; x < 10; x += 1) {
+      testGameboard.initiateGameboard();
       testGameboard.randomizeBoard();
-      const allShips = testGameboard.allShips;
+      const { allShips } = testGameboard;
 
       const coordsForShips = [];
-
+      // eslint-disable-next-line no-loop-func
       Object.values(allShips).forEach((ship) => {
         ship.coords.forEach((c, i) => {
           const cell = testGameboard.grid[c[0]][c[1]];
@@ -99,8 +101,8 @@ describe("Testing randomize function", () => {
           }
         }
       }
-    });
-  }
+    }
+  });
 });
 
 describe("Testing isGameOver() function", () => {
@@ -120,5 +122,25 @@ describe("Testing isGameOver() function", () => {
     });
 
     expect(testGameboard.isGameOver()).toBeTruthy();
+  });
+
+  test("Shows NOT game over when at least one ship is still ok. ", () => {
+    testGameboard.randomizeBoard();
+    const coordsOfShips = [];
+    testGameboard.grid.forEach((row, i) => {
+      row.forEach((col, j) => {
+        if (col.ship) {
+          coordsOfShips.push([i, j]);
+        }
+      });
+    });
+
+    coordsOfShips.forEach((c, i) => {
+      if (i !== 1) {
+        testGameboard.receiveAttack(c);
+      }
+    });
+
+    expect(testGameboard.isGameOver()).toBeFalsy();
   });
 });

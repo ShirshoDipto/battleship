@@ -97,6 +97,11 @@ export default function GameController() {
     }
   };
 
+  const verifyRoomIds = () =>
+    players[0].roomId &&
+    players[1].roomId &&
+    players[0].roomId === players[1].roomId;
+
   return {
     gameboards,
     players,
@@ -110,5 +115,6 @@ export default function GameController() {
     isLeavingGame,
     handlePlayerAttack,
     changePlayerRoomId,
+    verifyRoomIds,
   };
 }
