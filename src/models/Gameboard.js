@@ -126,7 +126,6 @@ export default class Gameboard {
       coordsToCheck = [...Gameboard.getAdjacentsForAxisY(coords), ...coords];
     }
 
-    // Check if at least one of the value in the adjacents array is invalid
     const isInvalid = coordsToCheck.some((c) => {
       const row = this.grid[c[0]];
       const pos = row ? row[c[1]] : false;
@@ -134,7 +133,7 @@ export default class Gameboard {
       return pos && pos.ship && pos.ship.shipObj.name !== shipName;
     });
 
-    return !isInvalid; // If none of them are invalid, the location is valid
+    return !isInvalid;
   }
 
   static generateRandomNum(range) {
