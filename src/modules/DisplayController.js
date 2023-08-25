@@ -176,6 +176,13 @@ export default function DisplayController() {
   };
 
   const renderGameboard = (container, board, player) => {
+    let boardCaption = "";
+    if (!board.isPreping && board.playerId === "you") {
+      boardCaption = "(Your board)";
+    } else if (!board.isPreping && board.playerId !== "you") {
+      boardCaption = "(Opponent's board)";
+    }
+
     container.innerHTML = `
                         <div class="coord-num"></div>
                         <div class="coord-num">0</div>
@@ -200,6 +207,7 @@ export default function DisplayController() {
                         <div class="coord-num">9</div>
 
                         <div class="main-grid"></div>
+                        <p class="board-indicator">${boardCaption}<p>
                         `;
 
     const mainGrid = container.querySelector(".main-grid");
