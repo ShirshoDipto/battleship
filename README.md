@@ -4,7 +4,7 @@
 
 [Server Repo](https://github.com/ShirshoDipto/battleship-server)
 
-![Initial Demo](./dist/assets/battlshipGif.webp)
+![Initial Demo](./dist/assets/battleship.gif)
 
 ## Technologies used
 
