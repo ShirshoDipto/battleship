@@ -2,7 +2,7 @@
 
 [View Live](https://shirshodipto.github.io/battleship)
 
-[Server Repo](https://github.com/ShirshoDipto/battleship-server)
+[Server Repository](https://github.com/ShirshoDipto/battleship-server)
 
 ![Initial Demo](./dist/assets/battleship.gif)
 
